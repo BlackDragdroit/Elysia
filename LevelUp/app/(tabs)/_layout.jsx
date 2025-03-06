@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { Pressable } from "react-native";
 
 export default function RootLayout() {
   return (
@@ -7,11 +8,14 @@ export default function RootLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#5E1C59",
+          backgroundColor: "#150067",
           borderTopWidth: 0,
           elevation: 0,
         },
         tabBarActiveTintColor: "white",
+        tabBarLabelStyle: {
+          fontFamily: "SpaceGrotesk",
+        },
       }}
     >
       {/* options={{ tabBarLabel: "Home" }} */}
@@ -25,13 +29,24 @@ export default function RootLayout() {
               size={size}
             ></Ionicons>
           ),
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: "transparent" }} />
+          ),
         }}
       ></Tabs.Screen>
       <Tabs.Screen
         name="Home"
         options={{
+          tabBarLabel: "Game",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" color={color} size={size} />
+            <Ionicons
+              name="game-controller-outline"
+              color={color}
+              size={size}
+            />
+          ),
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: "transparent" }} />
           ),
         }}
       ></Tabs.Screen>
@@ -41,6 +56,9 @@ export default function RootLayout() {
           tabBarLabel: "Manage Quests",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="rocket-outline" color={color} size={size} />
+          ),
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: "transparent" }} />
           ),
         }}
       ></Tabs.Screen>

@@ -6,11 +6,12 @@ import { LinearGradient } from "expo-linear-gradient";
 export default function Home() {
   useFonts({
     "Audiowide-Regular": require("../../assets/fonts/Audiowide-Regular.ttf"),
+    SpaceGrotesk: require("../../assets/fonts/SpaceGrotesk.ttf"),
   });
 
   return (
     <LinearGradient
-      colors={["#150067", "#5E1C59"]}
+      colors={["#5E1C59", "#150067"]}
       style={commonStyles.container}
     >
       <View style={commonStyles.container}>
@@ -19,10 +20,10 @@ export default function Home() {
           backgroundColor="black"
           barStyle="light-content"
         />
-        <Text style={commonStyles.title}>Home</Text>
-        <View style={commonStyles.contentContainer}>
+        <View style={commonStyles.header}>
           <Text style={commonStyles.text}>Welcome to LevelUp!</Text>
         </View>
+        <View style={commonStyles.contentContainer}></View>
       </View>
     </LinearGradient>
   );
