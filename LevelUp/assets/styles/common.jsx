@@ -5,6 +5,7 @@ let font = "SpaceGrotesk";
 const commonStyles = StyleSheet.create({
   header: {
     flex: 1,
+    marginTop: "20%",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
@@ -19,17 +20,16 @@ const commonStyles = StyleSheet.create({
     width: "100%",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   contentContainer: {
     flex: 10,
-    marginTop: 20,
     width: "100%",
     height: "80%",
     // borderWidth: 3,
     borderBlockColor: "white",
     flexDirection: "column",
     alignItems: "center",
+    paddingTop: StatusBar.currentHeight,
   },
   title: {
     // fontSize: 38,

@@ -9,15 +9,7 @@ const Profile = () => {
       style={commonStyles.container}
     >
       <View style={commonStyles.container}>
-        <StatusBar
-          translucent
-          backgroundColor="black"
-          barStyle="light-content"
-        />
-        <View style={commonStyles.header}>
-          <Text style={commonStyles.text}>Profile</Text>
-        </View>
-        <View style={commonStyles.contentContainer}></View>
+        <StatusBar translucent />
       </View>
     </LinearGradient>
   );
