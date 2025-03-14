@@ -20,16 +20,9 @@ const commonStyles = StyleSheet.create({
     width: "100%",
     flexDirection: "column",
     alignItems: "center",
-  },
-  contentContainer: {
-    flex: 10,
-    width: "100%",
-    height: "80%",
-    // borderWidth: 3,
-    borderBlockColor: "white",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: StatusBar.currentHeight,
+    justifyContent: "center",
+    // borderColor: "white",
+    // borderWidth: 1,
   },
   title: {
     // fontSize: 38,
@@ -39,11 +32,13 @@ const commonStyles = StyleSheet.create({
     fontSize: 24,
     fontFamily: font,
     color: "white",
+    textAlign: "center",
   },
   text: {
     fontSize: 18,
     color: "white",
     fontFamily: font,
+    textAlign: "center",
   },
 });
 

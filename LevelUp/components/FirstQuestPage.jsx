@@ -11,6 +11,7 @@ import {
 import React, { useRef } from "react";
 
 import commonStyles from "../assets/styles/common";
+import { FadeIn } from "../assets/styles/Animations/Animations";
 
 const FirstQuestPage = () => {
   const scaleValue = useRef(new Animated.Value(1)).current;
@@ -29,18 +30,20 @@ const FirstQuestPage = () => {
     }).start();
   };
   return (
-    <View style={styles.container}>
-      <StatusBar translucent />
-      <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-        <Pressable
-          style={styles.button}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-        >
-          <Text style={styles.buttonText}>Create your first Quest</Text>
-        </Pressable>
-      </Animated.View>
-    </View>
+    <FadeIn speed={300}>
+      <View style={styles.container}>
+        <StatusBar translucent />
+        <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+          <Pressable
+            style={styles.button}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+          >
+            <Text style={styles.buttonText}>Create your first Quest</Text>
+          </Pressable>
+        </Animated.View>
+      </View>
+    </FadeIn>
   );
 };
 
