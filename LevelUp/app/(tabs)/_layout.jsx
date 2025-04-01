@@ -7,7 +7,7 @@ export default function RootLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#150067",
+          backgroundColor: "#005F5B",
           borderTopWidth: 0,
           elevation: 0,
         },

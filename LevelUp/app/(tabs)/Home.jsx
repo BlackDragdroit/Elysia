@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <LinearGradient
-      colors={["#5E1C59", "#150067"]}
+      colors={["#A7E400", "#005F5B"]}
       style={commonStyles.container}
     >
       {showIntro && (
