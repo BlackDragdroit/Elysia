@@ -11,8 +11,10 @@ const HomePage = () => {
   return (
     <GestureHandlerRootView>
       <FadeIn speed={300}>
-        <ScrollView>
-          <View style={styles.container1} />
+        <ScrollView style={styles.container}>
+          <View style={styles.container1}>
+            <Text>he</Text>
+          </View>
           <View style={styles.container2} />
           <View style={styles.container3} />
           <View style={styles.container4} />
@@ -25,7 +27,18 @@ const HomePage = () => {
 };
 
 const styles = StyleSheet.create({
-  container1: {},
+  container: {
+    flex: 1,
+    height: "100%",
+    width: "100%",
+  },
+  container1: {
+    flex: 1,
+    height: "20em",
+    width: "10em",
+    borderColor: "white",
+    borderWidth: 1,
+  },
   container2: {},
   container3: {},
   container4: {},

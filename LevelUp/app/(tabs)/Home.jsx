@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StatusBar } from "react-native";
-import commonStyles from "../../assets/styles/common";
+import { View, StatusBar, StyleSheet } from "react-native";
+import { commonStyles, colors } from "../../assets/styles/common";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import HomePage from "../../components/HomePage";
@@ -11,20 +11,22 @@ export default function Home() {
     SpaceGrotesk: require("../../assets/fonts/SpaceGrotesk.ttf"),
   });
 
-  let showIntro = false;
-  let showHome = true;
+  let showIntro = true;
+  // let showHome = true;
 
   return (
     <LinearGradient
-      colors={["#A7E400", "#005F5B"]}
-      style={commonStyles.container}
+      colors={[colors.gradient1, colors.gradient2]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
     >
       {showIntro && (
         <>
           <HomeIntro />
         </>
       )}
-      {showHome && (
+      {!showIntro && (
         <>
           <HomePage />
         </>

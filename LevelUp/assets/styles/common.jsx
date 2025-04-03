@@ -2,7 +2,17 @@ import { Platform, StatusBar, StyleSheet } from "react-native";
 let titleFont = "Audiowide-Regular";
 let font = "SpaceGrotesk";
 
-const commonStyles = StyleSheet.create({
+export const colors = {
+  background: "#181818",
+  gradient1: "#181818",
+  gradient2: "#252525",
+  primary: "#FF6347",
+  secondary: "#4CAF50",
+  text: "#FFFFFF",
+  border: "#FFFFFF",
+};
+
+export const commonStyles = StyleSheet.create({
   header: {
     flex: 1,
     marginTop: "20%",
@@ -41,5 +51,3 @@ const commonStyles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-export default commonStyles;

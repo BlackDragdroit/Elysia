@@ -2,11 +2,8 @@ import { View, Text, StyleSheet, StatusBar, Dimensions } from "react-native";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import React, { useRef } from "react";
-
-import commonStyles from "../assets/styles/common";
 import { FadeInOut } from "../assets/styles/Animations/Animations";
-
-let showView = true;
+import { commonStyles } from "../assets/styles/common";
 
 const HomeIntro = () => {
   return (

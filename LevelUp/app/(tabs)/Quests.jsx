@@ -8,61 +8,33 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import commonStyles from "../../assets/styles/common";
 import { LinearGradient } from "expo-linear-gradient";
 import FirstQuestPage from "../../components/FirstQuestPage";
 import { FadeIn } from "../../assets/styles/Animations/Animations";
+import { colors } from "../../assets/styles/common";
+import { useSearchParams } from "expo-router/build/hooks";
 
 const Quests = () => {
-  let quests = true;
-
-  const DATA = [
-    { title: "Main", data: ["First Quest", "Second Quest", "Third Quest"] },
-    { title: "Side", data: ["Fourth Quest", "Fifth Quest", "Sixth Quest"] },
-    {
-      title: "Bonus",
-      data: ["Kill a Boss", "Eighth Quest", "Ninth Quest"],
-    },
-    {
-      title: "Daily",
-      data: ["Tenth Quest", "Eleventh Quest", "Twelfth Quest"],
-    },
-  ];
+  let params = useSearchParams();
 
   return (
     <LinearGradient
-      translucent
-      colors={["#5E1C59", "#150067"]}
-      style={commonStyles.container}
+      colors={[colors.gradient1, colors.gradient2]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
     >
-      {quests && (
-        <FadeIn speed={300}>
-          <View style={commonStyles.container}>
-            <SectionList
-              sections={DATA}
-              keyExtractor={(item, index) => item + index}
-              renderItem={({ item, index }) => (
-                <View style={styles.item}>
-                  <Text style={styles.count}>{index + 1}.</Text>
-                  <Text style={styles.text}>{item}</Text>
-                </View>
-              )}
-              renderSectionHeader={({ section: { title } }) => (
-                <Text style={styles.header}>{title}</Text>
-              )}
-              // renderSectionFooter={({ section }) => (
-              //   <View style={styles.footerItem}></View>
-              // )}
-            ></SectionList>
+      <FadeIn speed={300}>
+        {params.get("newQuest") ? (
+          <View>
+            <Text style={styles.header}>New Quest</Text>
           </View>
-        </FadeIn>
-      )}
-      {!quests && (
-        <>
-          <StatusBar translucent />
-          <FirstQuestPage />
-        </>
-      )}
+        ) : (
+          <View>
+            <Text style={styles.header}>Quests {params}</Text>
+          </View>
+        )}
+      </FadeIn>
     </LinearGradient>
   );
 };
@@ -73,7 +45,7 @@ const styles = StyleSheet.create({
     fontFamily: "SpaceGrotesk",
     // fontWeight: "bold",
     color: "white",
-    textAlign: "left",
+    textAlign: "center",
     width: "100%",
     marginTop: 20,
   },

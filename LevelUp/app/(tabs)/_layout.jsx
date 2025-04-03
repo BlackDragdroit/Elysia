@@ -1,17 +1,26 @@
-import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from "../../components/Contexts/ThemeProvider";
+import renderIcon from "../../assets/styles/renderIcon";
 import { Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import { useContext } from "react";
+import { Pressable, View } from "react-native";
+import { useRouter } from "expo-router";
 export default function RootLayout() {
+  const theme = useContext(ThemeContext);
+
+  const router = useRouter();
+
+  const isDarkmode = true;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#005F5B",
+          backgroundColor: isDarkmode ? "#171717" : "#ffffff",
           borderTopWidth: 0,
           elevation: 0,
         },
-        tabBarActiveTintColor: "white",
+        tabBarActiveTintColor: "#6b57c8",
         tabBarLabelStyle: {
           fontFamily: "SpaceGrotesk",
         },
@@ -19,49 +28,71 @@ export default function RootLayout() {
     >
       {/* options={{ tabBarLabel: "Home" }} */}
       <Tabs.Screen
-        name="Profile"
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="accessibility-outline"
-              color={color}
-              size={size}
-            ></Ionicons>
-          ),
-          tabBarButton: (props) => (
-            <Pressable {...props} android_ripple={{ color: "transparent" }} />
-          ),
-        }}
-      ></Tabs.Screen>
-      <Tabs.Screen
         name="Home"
         options={{
-          tabBarLabel: "Game",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="game-controller-outline"
-              color={color}
-              size={size}
-            />
-          ),
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => renderIcon("house", color, size),
           tabBarButton: (props) => (
             <Pressable {...props} android_ripple={{ color: "transparent" }} />
           ),
         }}
       ></Tabs.Screen>
+
       <Tabs.Screen
         name="Quests"
         options={{
-          tabBarLabel: "Manage Quests",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="rocket-outline" color={color} size={size} />
+          tabBarLabel: "Quests",
+          tabBarIcon: ({ color, size }) => renderIcon("tasks", color, size),
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: "transparent" }} />
           ),
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault(); // Prevent default behavior of tab press
+            navigation.navigate("Quests"); // Navigate to the Quests screen with newQuest param
+          },
+        })}
+      ></Tabs.Screen>
+
+      <Tabs.Screen
+        name="NewQuest"
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: () => renderIcon("newQuest", "#6b57c8", 48),
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: "transparent" }} />
+          ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault(); // Prevent default behavior of tab press
+            router.replace("/(tabs)/Quests?newQuest=true"); // Navigate to the Quests tab with newQuest query param
+          },
+        }}
+      ></Tabs.Screen>
+
+      <Tabs.Screen
+        name="Bosses"
+        options={{
+          tabBarLabel: "Bosses",
+          tabBarIcon: ({ color, size }) => renderIcon("bosses", color, size),
           tabBarButton: (props) => (
             <Pressable {...props} android_ripple={{ color: "transparent" }} />
           ),
         }}
       ></Tabs.Screen>
-      {/* options={{ tabBarLabel: "Profile" }} */}
+
+      <Tabs.Screen
+        name="Profile"
+        options={{
+          tabBarLabel: "Pro",
+          tabBarIcon: ({ color, size }) => renderIcon("profile", color, size),
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: "transparent" }} />
+          ),
+        }}
+      ></Tabs.Screen>
     </Tabs>
   );
 }
