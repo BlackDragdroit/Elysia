@@ -1,11 +1,14 @@
 import { Platform, StatusBar, StyleSheet } from "react-native";
+
 let titleFont = "Audiowide-Regular";
 let font = "SpaceGrotesk";
 
 export const colors = {
   background: "#181818",
-  gradient1: "#181818",
-  gradient2: "#252525",
+  gradientLight1: "#f4f4f4",
+  gradientLight2: "#e5e5e5",
+  gradientDark1: "#181818",
+  gradientDark2: "#252525",
   primary: "#FF6347",
   secondary: "#4CAF50",
   text: "#FFFFFF",

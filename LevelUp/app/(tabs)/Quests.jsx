@@ -7,19 +7,29 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import FirstQuestPage from "../../components/FirstQuestPage";
 import { FadeIn } from "../../assets/styles/Animations/Animations";
 import { colors } from "../../assets/styles/common";
 import { useSearchParams } from "expo-router/build/hooks";
+import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 
 const Quests = () => {
   let params = useSearchParams();
 
+  const { theme } = useContext(ThemeContext);
+
+  const isDarkmode = theme === "dark" ? true : false;
+
+  const textColor = isDarkmode ? "white" : "black";
+
   return (
     <LinearGradient
-      colors={[colors.gradient1, colors.gradient2]}
+      colors={
+        isDarkmode
+          ? [colors.gradientDark1, colors.gradientDark2]
+          : [colors.gradientLight1, colors.gradientLight2]
+      }
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
@@ -27,11 +37,11 @@ const Quests = () => {
       <FadeIn speed={300}>
         {params.get("newQuest") ? (
           <View>
-            <Text style={styles.header}>New Quest</Text>
+            <Text style={[styles.header, { color: textColor }]}>New Quest</Text>
           </View>
         ) : (
           <View>
-            <Text style={styles.header}>Quests {params}</Text>
+            <Text style={[styles.header, { color: textColor }]}>Quests</Text>
           </View>
         )}
       </FadeIn>
@@ -44,7 +54,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily: "SpaceGrotesk",
     // fontWeight: "bold",
-    color: "white",
     textAlign: "center",
     width: "100%",
     marginTop: 20,
