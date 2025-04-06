@@ -1,7 +1,11 @@
 import { Platform, StatusBar, StyleSheet } from "react-native";
 
 let titleFont = "Audiowide-Regular";
-let font = "SpaceGrotesk";
+export const font = "Audiowide-Regular";
+
+export const titleSize = 36;
+export const subTitleSize = 24;
+export const textColorPurple = "#6b57c7";
 
 export const colors = {
   background: "#181818",

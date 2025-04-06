@@ -13,6 +13,7 @@ import { FadeIn } from "../../assets/styles/Animations/Animations";
 import { colors } from "../../assets/styles/common";
 import { useSearchParams } from "expo-router/build/hooks";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { font } from "@/assets/styles/common";
 
 const Quests = () => {
   let params = useSearchParams();
@@ -52,7 +53,7 @@ const Quests = () => {
 const styles = StyleSheet.create({
   header: {
     fontSize: 32,
-    fontFamily: "SpaceGrotesk",
+    fontFamily: font,
     // fontWeight: "bold",
     textAlign: "center",
     width: "100%",
@@ -61,14 +62,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: "white",
-    fontFamily: "SpaceGrotesk",
+    fontFamily: font,
     textAlign: "left",
     width: "80%",
   },
   count: {
     fontSize: 18,
     color: "white",
-    fontFamily: "SpaceGrotesk",
+    fontFamily: font,
     textAlign: "left",
     marginRight: "10%",
     width: 18,

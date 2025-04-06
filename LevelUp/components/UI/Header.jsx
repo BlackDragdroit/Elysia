@@ -1,9 +1,10 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { commonStyles, colors } from "../../assets/styles/common";
+import { font } from "@/assets/styles/common";
 import renderIcon from "@/assets/styles/renderIcon";
 import logo from "../../assets/images/Logo(Purple).png";
 import { useContext } from "react";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import AccountButton from "@/components/UI/AccountButton";
 
 const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -31,7 +32,7 @@ const Header = () => {
           fontSize: 24,
           fontWeight: "heavy",
           color: isDarkmode ? "white" : "black",
-          fontFamily: "SpaceGrotesk",
+          fontFamily: font,
           left: 10,
         }}
       >
@@ -41,7 +42,7 @@ const Header = () => {
         style={{
           height: 38,
           width: 38,
-          backgroundColor: isDarkmode ? "darkgray" : "#f5f5f5",
+          backgroundColor: isDarkmode ? "#262626" : "#f5f5f5",
           borderRadius: 360,
           justifyContent: "center",
           alignItems: "center",
@@ -58,6 +59,7 @@ const Header = () => {
           20
         )}
       </Pressable>
+      <AccountButton />
     </View>
   );
 };

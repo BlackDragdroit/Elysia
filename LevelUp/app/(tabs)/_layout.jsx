@@ -7,6 +7,7 @@ import {
   ThemeProvider,
   ThemeContext,
 } from "@/components/Contexts/ThemeProvider";
+import { font } from "@/assets/styles/common";
 
 export default function TabsLayout() {
   return (
@@ -35,7 +36,7 @@ function ThemedTabs() {
           },
           tabBarActiveTintColor: isDarkmode ? "#6b57c8" : "#6b57c8", // Dynamic active tint color
           tabBarLabelStyle: {
-            fontFamily: "SpaceGrotesk",
+            fontFamily: font,
           },
         }}
       >
@@ -65,7 +66,21 @@ function ThemedTabs() {
           name="NewQuest"
           options={{
             tabBarLabel: "",
-            tabBarIcon: () => renderIcon("newQuest", "#6b57c8", 48),
+            tabBarIcon: () => (
+              <View
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: "#6b57c8",
+                  borderRadius: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 20,
+                }}
+              >
+                {renderIcon("newQuest", "white", 30)}
+              </View>
+            ),
             tabBarButton: (props) => (
               <Pressable {...props} android_ripple={{ color: "transparent" }} />
             ),

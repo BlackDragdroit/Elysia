@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useRouter } from "expo-router";
+import { Button, Text, View } from "react-native";
 
 const NewQuest = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    // Redirect to the Quests tab on mount
-    router.replace("/(tabs)/Quests");
-  }, [router]);
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>New Quest</Text>
+      <Button title="Go Back" onPress={() => router.back()} />
+    </View>
+  );
 };
 
 export default NewQuest;

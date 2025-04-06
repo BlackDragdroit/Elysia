@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useRef } from "react";
 
-import commonStyles from "../assets/styles/common";
+import font from "@/assets/styles/common";
 import { FadeIn } from "../assets/styles/Animations/Animations";
 
 const FirstQuestPage = () => {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     color: "white",
-    fontFamily: "SpaceGrotesk",
+    fontFamily: font,
   },
 });
 

@@ -4,6 +4,7 @@ import {
   House,
   Moon,
   PersonStanding,
+  Plus,
   SquareCheckBig,
   Sun,
   Swords,
@@ -20,7 +21,7 @@ export default function renderIcon(icon, color, size) {
     case "profile":
       return <PersonStanding color={color} size={size} />;
     case "newQuest":
-      return <CirclePlus color={color} size={size} />;
+      return <Plus color={color} size={size} />;
     case "lightmode":
       return <Sun color={color} size={size} />;
     case "darkmode":
