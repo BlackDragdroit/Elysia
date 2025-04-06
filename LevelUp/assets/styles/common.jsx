@@ -1,7 +1,7 @@
 import { Platform, StatusBar, StyleSheet } from "react-native";
 
-let titleFont = "Audiowide-Regular";
-export const font = "Audiowide-Regular";
+export const titleFont = "Audiowide-Regular";
+export const font = "Roboto-Variable";
 
 export const titleSize = 36;
 export const subTitleSize = 24;
@@ -15,7 +15,8 @@ export const colors = {
   gradientDark2: "#252525",
   primary: "#FF6347",
   secondary: "#4CAF50",
-  text: "#FFFFFF",
+  textLight: "black",
+  textDark: "white",
   border: "#FFFFFF",
 };
 
@@ -47,7 +48,7 @@ export const commonStyles = StyleSheet.create({
     // fontFamily: titleFont,
     color: "white",
     fontSize: 24,
-    fontFamily: font,
+    fontFamily: titleFont,
     color: "white",
     textAlign: "center",
   },

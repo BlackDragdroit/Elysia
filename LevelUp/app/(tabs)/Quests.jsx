@@ -10,10 +10,9 @@ import {
 import React, { useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FadeIn } from "../../assets/styles/Animations/Animations";
-import { colors } from "../../assets/styles/common";
 import { useSearchParams } from "expo-router/build/hooks";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
-import { font } from "@/assets/styles/common";
+import { font, colors } from "@/assets/styles/common";
 
 const Quests = () => {
   let params = useSearchParams();
@@ -22,7 +21,7 @@ const Quests = () => {
 
   const isDarkmode = theme === "dark" ? true : false;
 
-  const textColor = isDarkmode ? "white" : "black";
+  const textColor = isDarkmode ? colors.textDark : colors.textLight;
 
   return (
     <LinearGradient

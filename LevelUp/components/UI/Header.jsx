@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { font } from "@/assets/styles/common";
+import { titleFont } from "@/assets/styles/common";
 import renderIcon from "@/assets/styles/renderIcon";
 import logo from "../../assets/images/Logo(Purple).png";
 import { useContext } from "react";
@@ -32,7 +32,7 @@ const Header = () => {
           fontSize: 24,
           fontWeight: "heavy",
           color: isDarkmode ? "white" : "black",
-          fontFamily: font,
+          fontFamily: titleFont,
           left: 10,
         }}
       >

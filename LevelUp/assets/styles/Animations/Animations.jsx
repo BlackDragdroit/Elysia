@@ -8,7 +8,6 @@ export function FadeIn({ children, speed = 1000 }) {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("FadeIn effect triggered");
       setKey((prev) => prev + 1);
     }, [])
   );
