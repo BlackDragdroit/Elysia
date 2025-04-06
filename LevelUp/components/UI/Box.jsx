@@ -32,9 +32,7 @@ const Box = ({ children }) => {
           shadowColor: "black",
           shadowOffset: { width: 0, height: 0 },
           shadowOpacity: 0.25,
-          shadowRadius: 5, // Add shadow radius for better effect
-          elevation: 5, // Add elevation for Android shadow
-          padding: 10, // Add padding for better spacing
+          shadowRadius: 5,
         }}
       >
         <Text

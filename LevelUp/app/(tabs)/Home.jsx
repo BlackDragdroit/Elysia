@@ -44,7 +44,11 @@ export default function Home() {
       style={{ flex: 1 }}
     >
       <FadeIn speed={300}>
-        <ScrollView>
+        <ScrollView
+          bounces={true}
+          alwaysBounceVertical={true}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 138 + 1 }}
+        >
           <View style={styles.subTitleView}>
             <Text style={[styles.header, { color: textColor }]}>
               Today's Quests
