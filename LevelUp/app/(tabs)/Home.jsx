@@ -7,13 +7,13 @@ import {
   Pressable,
   ScrollView,
 } from "react-native";
-import { commonStyles, colors } from "../../assets/styles/common";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
-import { subTitleSize, textColorPurple } from "@/assets/styles/common";
+import { subTitleSize, colors } from "@/assets/styles/common";
 import Box from "../../components/UI/Box";
+import { Achievement } from "../../components/UI/Achievement";
 
 let font = "Roboto-Variable";
 export default function Home() {
@@ -44,11 +44,7 @@ export default function Home() {
       style={{ flex: 1 }}
     >
       <FadeIn speed={300}>
-        <ScrollView
-          bounces={true}
-          alwaysBounceVertical={true}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 138 + 1 }}
-        >
+        <ScrollView>
           <View style={styles.subTitleView}>
             <Text style={[styles.header, { color: textColor }]}>
               Today's Quests
@@ -81,7 +77,28 @@ export default function Home() {
           </View>
 
           <Box>
-            Pretty empty... {"\n"} Complete quests to earn achievements!
+            <Achievement
+              title="Dedicator"
+              descr="Complete 10 Quests"
+              icon="tasks"
+            />
+            <Achievement
+              title="Motivator"
+              descr="Successfully invite 5 friends"
+              icon="tasks"
+            />
+            <Achievement
+              title="Chef in Training"
+              descr="Prepare 5 healthy meals"
+              icon="tasks"
+            />
+            <Achievement
+              title="Dragon Slayer"
+              descr="Defeat your first boss"
+              icon="tasks"
+            />
+
+            {/* Pretty empty... {"\n"} Complete quests to earn achievements! */}
           </Box>
         </ScrollView>
       </FadeIn>
@@ -100,11 +117,11 @@ const styles = StyleSheet.create({
   subTitleView: {
     justifyContent: "space-between",
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 10,
   },
   subTitleText: {
     fontFamily: font,
-    color: textColorPurple,
+    color: colors.purple,
     marginRight: 10,
     marginTop: 10,
   },

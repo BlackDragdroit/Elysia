@@ -5,7 +5,6 @@ export const font = "Roboto-Variable";
 
 export const titleSize = 36;
 export const subTitleSize = 24;
-export const textColorPurple = "#6b57c7";
 
 export const colors = {
   background: "#181818",
@@ -18,6 +17,8 @@ export const colors = {
   textLight: "black",
   textDark: "white",
   border: "#FFFFFF",
+  purple: "#6b57c8",
+  pink: "#a855f7",
 };
 
 export const commonStyles = StyleSheet.create({

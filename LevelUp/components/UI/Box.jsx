@@ -5,6 +5,7 @@ import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 const Box = ({ children }) => {
   const { theme } = useContext(ThemeContext);
   const isDarkmode = theme === "dark" ? true : false;
+
   const boxTextColor = isDarkmode ? "#a3a3a3" : "#737373";
   const bColor = isDarkmode ? "black" : "white";
   const borderColor = isDarkmode ? "#27272a" : "#e7e5e4";
@@ -13,6 +14,7 @@ const Box = ({ children }) => {
   return (
     <View
       style={{
+        flex: 1,
         alignContent: "center",
         justifyContent: "center",
         alignItems: "center",
@@ -20,13 +22,17 @@ const Box = ({ children }) => {
     >
       <View
         style={{
+          padding: 10,
+          flexDirection: "row",
+          flexWrap: "wrap",
           backgroundColor: bColor,
           borderRadius: 10,
-          width: "90%",
-          minHeight: 100, // Minimum height for the box
-          marginTop: 20,
+          width: "95%",
+          minHeight: 100,
+          marginTop: 10,
           justifyContent: "center",
           alignItems: "center",
+          alignContent: "center",
           borderColor: borderColor,
           borderWidth: 1,
           shadowColor: "black",
@@ -35,16 +41,20 @@ const Box = ({ children }) => {
           shadowRadius: 5,
         }}
       >
-        <Text
-          style={{
-            color: boxTextColor,
-            fontSize: 18,
-            textAlign: "center",
-            fontFamily: font,
-          }}
-        >
-          {children}
-        </Text>
+        {typeof children == "string" ? (
+          <Text
+            style={{
+              color: boxTextColor,
+              fontSize: 18,
+              textAlign: "center",
+              fontFamily: font,
+            }}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
       </View>
     </View>
   );

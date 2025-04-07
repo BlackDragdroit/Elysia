@@ -36,10 +36,8 @@ const AccountButton = () => {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
+        alignContent: "center",
         marginRight: 10,
-        shadowColor: isDarkmode ? "white" : "black",
-        shadowOpacity: 0.25,
-        elevation: 5,
       }}
     >
       <View
@@ -62,17 +60,14 @@ const AccountButton = () => {
             fontSize: 10,
             fontWeight: "bold",
             textAlign: "center",
-            alignContent: "center",
             justifyContent: "center",
-            alignItems: "center",
+            width: "100%",
           }}
         >
           {level}
         </Text>
       </View>
-      <Text style={{ color: isDarkmode ? "black" : "white" }}>
-        {renderIcon("profile", isDarkmode ? "black" : "white")}
-      </Text>
+      {renderIcon("profile", isDarkmode ? "black" : "white")}
     </View>
   );
 };

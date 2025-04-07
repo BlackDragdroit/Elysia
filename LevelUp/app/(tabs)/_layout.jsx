@@ -34,7 +34,7 @@ function ThemedTabs() {
             shadowOpacity: 0,
             shadowColor: "transparent",
           },
-          tabBarActiveTintColor: isDarkmode ? "#6b57c8" : "#6b57c8", // Dynamic active tint color
+          tabBarActiveTintColor: "#6b57c8",
           tabBarLabelStyle: {
             fontFamily: font,
           },
@@ -69,8 +69,8 @@ function ThemedTabs() {
             tabBarIcon: () => (
               <View
                 style={{
-                  width: 60,
-                  height: 60,
+                  width: 50,
+                  height: 50,
                   backgroundColor: "#6b57c8",
                   borderRadius: 30,
                   justifyContent: "center",
@@ -78,7 +78,7 @@ function ThemedTabs() {
                   marginBottom: 20,
                 }}
               >
-                {renderIcon("newQuest", "white", 30)}
+                {renderIcon("newQuest", "white", 20)}
               </View>
             ),
             tabBarButton: (props) => (
