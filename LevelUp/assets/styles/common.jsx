@@ -17,11 +17,11 @@ export const colors = {
   textLight: "black",
   textDark: "white",
   border: "#FFFFFF",
-  purple: "#6b57c8",
+  purple: "#6b57ea",
   pink: "#a855f7",
 };
 
-export const commonStyles = StyleSheet.create({
+export const styles = StyleSheet.create({
   header: {
     flex: 1,
     marginTop: "20%",
@@ -52,6 +52,24 @@ export const commonStyles = StyleSheet.create({
     fontFamily: titleFont,
     color: "white",
     textAlign: "center",
+  },
+  subTitle: {
+    fontSize: subTitleSize,
+    fontFamily: font,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+
+  subTitleView: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  subTitleText: {
+    fontFamily: font,
+    color: colors.purple,
+    marginRight: 10,
+    marginTop: 10,
   },
   text: {
     fontSize: 18,

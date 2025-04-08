@@ -11,7 +11,7 @@ import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
-import { subTitleSize, colors } from "@/assets/styles/common";
+import { styles, colors } from "@/assets/styles/common";
 import Box from "../../components/UI/Box";
 import { Achievement } from "../../components/UI/Achievement";
 
@@ -46,7 +46,7 @@ export default function Home() {
       <FadeIn speed={300}>
         <ScrollView>
           <View style={styles.subTitleView}>
-            <Text style={[styles.header, { color: textColor }]}>
+            <Text style={[styles.subTitle, { color: textColor }]}>
               Today's Quests
             </Text>
             <Pressable>
@@ -57,7 +57,7 @@ export default function Home() {
           <Box>No Quests for today. Add a new quest to get started!</Box>
 
           <View style={styles.subTitleView}>
-            <Text style={[styles.header, { color: textColor }]}>
+            <Text style={[styles.subTitle, { color: textColor }]}>
               Active Boss Battles
             </Text>
             <Pressable>
@@ -68,7 +68,7 @@ export default function Home() {
           <Box>No active boss battles. Create a new challenge!</Box>
 
           <View style={styles.subTitleView}>
-            <Text style={[styles.header, { color: textColor }]}>
+            <Text style={[styles.subTitle, { color: textColor }]}>
               Recent Achievements
             </Text>
             <Pressable>
@@ -105,24 +105,3 @@ export default function Home() {
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    fontSize: subTitleSize,
-    fontFamily: font,
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
-
-  subTitleView: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  subTitleText: {
-    fontFamily: font,
-    color: colors.purple,
-    marginRight: 10,
-    marginTop: 10,
-  },
-});

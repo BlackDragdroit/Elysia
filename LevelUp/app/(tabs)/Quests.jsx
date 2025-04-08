@@ -1,18 +1,12 @@
-import {
-  Platform,
-  SafeAreaView,
-  SectionList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React, { useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FadeIn } from "../../assets/styles/Animations/Animations";
 import { useSearchParams } from "expo-router/build/hooks";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
-import { font, colors } from "@/assets/styles/common";
+import { styles, colors } from "@/assets/styles/common";
+import { NewQuestButton } from "@/components/UI/NewQuestButton";
+import renderIcon from "../../assets/styles/renderIcon";
 
 const Quests = () => {
   let params = useSearchParams();
@@ -35,58 +29,83 @@ const Quests = () => {
       style={{ flex: 1 }}
     >
       <FadeIn speed={300}>
-        {params.get("newQuest") ? (
-          <View>
-            <Text style={[styles.header, { color: textColor }]}>New Quest</Text>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignContent: "center",
+          }}
+        >
+          <View
+            style={{
+              marginTop: 40,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "90%",
+            }}
+          >
+            <Text style={[styles.subTitle, { color: textColor }]}>
+              All Quests
+            </Text>
+            <View style={{ marginRight: 10 }}>
+              <NewQuestButton />
+            </View>
           </View>
-        ) : (
-          <View>
-            <Text style={[styles.header, { color: textColor }]}>Quests</Text>
-          </View>
-        )}
+        </View>
+        {taskMapper(textColor)}
       </FadeIn>
     </LinearGradient>
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    fontSize: 32,
-    fontFamily: font,
-    // fontWeight: "bold",
-    textAlign: "center",
-    width: "100%",
-    marginTop: 20,
+const taskMapper = (textColor) => {
+  return (
+    <View style={{ alignItems: "center" }}>
+      <View
+        style={{
+          width: "80%",
+          height: 35,
+          flexDirection: "row",
+          justifyContent: "space-around",
+          backgroundColor: "#f5f5f4",
+          borderRadius: 5,
+        }}
+      >
+        <View style={localStyles.textContainer}>
+          {renderIcon("calendar", textColor, 14)}
+          <Text style={[localStyles.text, { color: textColor }]}>Today</Text>
+        </View>
+        <View style={localStyles.textContainer}>
+          {renderIcon("upcoming", textColor, 14)}
+          <Text style={[localStyles.text, { color: textColor }]}>Upcoming</Text>
+        </View>
+        <View style={localStyles.textContainer}>
+          {renderIcon("completed", textColor, 14)}
+          <Text style={[localStyles.text, { color: textColor }]}>
+            Completed
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const localStyles = StyleSheet.create({
+  textContainer: {
+    backgroundColor: "white",
+    width: "28%",
+    height: "80%",
+    flexDirection: "row",
+    marginVertical: "auto",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    borderRadius: 5,
   },
   text: {
-    fontSize: 18,
-    color: "white",
-    fontFamily: font,
-    textAlign: "left",
-    width: "80%",
-  },
-  count: {
-    fontSize: 18,
-    color: "white",
-    fontFamily: font,
-    textAlign: "left",
-    marginRight: "10%",
-    width: 18,
-  },
-  headerItem: {
-    marginTop: 20,
-    // width: 300,
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    // width: "90%",
-    borderLeftColor: "white",
-    borderRightColor: "white",
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    paddingVertical: 5,
-    paddingLeft: "10%",
+    fontSize: 12,
+    fontFamily: "Roboto-Variable",
+    fontWeight: "200",
   },
 });
 

@@ -1,5 +1,8 @@
 import React from "react";
 import {
+  Calendar,
+  CalendarArrowUp,
+  CalendarCheck,
   CirclePlus,
   House,
   Moon,
@@ -26,6 +29,12 @@ export default function renderIcon(icon, color, size) {
       return <Sun color={color} size={size} />;
     case "darkmode":
       return <Moon color={color} size={size} />;
+    case "calendar":
+      return <Calendar color={color} size={size} />;
+    case "upcoming":
+      return <CalendarArrowUp color={color} size={size} />;
+    case "completed":
+      return <CalendarCheck color={color} size={size} />;
     default:
       return null;
   }

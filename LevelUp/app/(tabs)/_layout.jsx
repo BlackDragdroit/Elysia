@@ -3,11 +3,12 @@ import { Tabs } from "expo-router";
 import { useContext } from "react";
 import { Pressable, View } from "react-native";
 import Header from "../../components/UI/Header";
+import { NewQuestButton } from "@/components/UI/NewQuestButton";
 import {
   ThemeProvider,
   ThemeContext,
 } from "@/components/Contexts/ThemeProvider";
-import { font } from "@/assets/styles/common";
+import { font, colors } from "@/assets/styles/common";
 
 export default function TabsLayout() {
   return (
@@ -34,7 +35,7 @@ function ThemedTabs() {
             shadowOpacity: 0,
             shadowColor: "transparent",
           },
-          tabBarActiveTintColor: "#6b57c8",
+          tabBarActiveTintColor: colors.purple,
           tabBarLabelStyle: {
             fontFamily: font,
           },
@@ -66,21 +67,7 @@ function ThemedTabs() {
           name="NewQuest"
           options={{
             tabBarLabel: "",
-            tabBarIcon: () => (
-              <View
-                style={{
-                  width: 50,
-                  height: 50,
-                  backgroundColor: "#6b57c8",
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 20,
-                }}
-              >
-                {renderIcon("newQuest", "white", 20)}
-              </View>
-            ),
+            tabBarIcon: () => <NewQuestButton size={50} />,
             tabBarButton: (props) => (
               <Pressable {...props} android_ripple={{ color: "transparent" }} />
             ),

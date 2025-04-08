@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import renderIcon from "@/assets/styles/renderIcon";
+import { colors } from "@/assets/styles/common";
 const AccountButton = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -50,7 +51,7 @@ const AccountButton = () => {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          backgroundColor: isDarkmode ? "#6b57c8" : "#6b57c8",
+          backgroundColor: colors.purple,
           borderRadius: 10,
         }}
       >
