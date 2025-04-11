@@ -59,12 +59,13 @@ export const Achievement = ({ icon, title, descr }) => {
         style={{
           fontFamily: "Roboto-Variable",
           fontWeight: "bold",
+          textAlign: "center",
           fontSize: 16,
           color: textColor,
           marginBottom: 5,
         }}
       >
-        {title}
+        {title} {/* Max Char Count 18 */}
       </Text>
       <Text
         style={{

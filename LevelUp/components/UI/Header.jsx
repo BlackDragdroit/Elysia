@@ -54,7 +54,7 @@ const Header = () => {
         }}
       >
         {renderIcon(
-          isDarkmode ? "lightmode" : "darkmode",
+          isDarkmode ? "sun" : "moon",
           isDarkmode ? "white" : "black",
           20
         )}

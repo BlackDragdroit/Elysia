@@ -44,7 +44,7 @@ export default function Home() {
       style={{ flex: 1 }}
     >
       <FadeIn speed={300}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View style={styles.subTitleView}>
             <Text style={[styles.subTitle, { color: textColor }]}>
               Today's Quests
@@ -54,8 +54,9 @@ export default function Home() {
             </Pressable>
           </View>
 
-          <Box>No Quests for today. Add a new quest to get started!</Box>
-
+          <View style={localStyles.boxView}>
+            <Box>No Quests for today. Add a new quest to get started!</Box>
+          </View>
           <View style={styles.subTitleView}>
             <Text style={[styles.subTitle, { color: textColor }]}>
               Active Boss Battles
@@ -65,7 +66,9 @@ export default function Home() {
             </Pressable>
           </View>
 
-          <Box>No active boss battles. Create a new challenge!</Box>
+          <View style={localStyles.boxView}>
+            <Box>No active boss battles. Create a new challenge!</Box>
+          </View>
 
           <View style={styles.subTitleView}>
             <Text style={[styles.subTitle, { color: textColor }]}>
@@ -75,33 +78,43 @@ export default function Home() {
               <Text style={styles.subTitleText}>View All {"-->"}</Text>
             </Pressable>
           </View>
+          <View style={localStyles.boxView}>
+            <Box>
+              <Achievement
+                title="Dedicator"
+                descr="Complete 10 Quests"
+                icon="swords"
+              />
+              <Achievement
+                title="Motivator"
+                descr="Successfully invite 5 friends"
+                icon="swords"
+              />
+              <Achievement
+                title="Chef in Training"
+                descr="Prepare 5 healthy meals"
+                icon="swords"
+              />
+              <Achievement
+                title="Dragon Slayer"
+                descr="Defeat your first boss"
+                icon="swords"
+              />
 
-          <Box>
-            <Achievement
-              title="Dedicator"
-              descr="Complete 10 Quests"
-              icon="tasks"
-            />
-            <Achievement
-              title="Motivator"
-              descr="Successfully invite 5 friends"
-              icon="tasks"
-            />
-            <Achievement
-              title="Chef in Training"
-              descr="Prepare 5 healthy meals"
-              icon="tasks"
-            />
-            <Achievement
-              title="Dragon Slayer"
-              descr="Defeat your first boss"
-              icon="tasks"
-            />
-
-            {/* Pretty empty... {"\n"} Complete quests to earn achievements! */}
-          </Box>
+              {/* Pretty empty... {"\n"} Complete quests to earn achievements! */}
+            </Box>
+          </View>
         </ScrollView>
       </FadeIn>
     </LinearGradient>
   );
 }
+
+const localStyles = StyleSheet.create({
+  boxView: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

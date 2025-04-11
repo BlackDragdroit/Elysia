@@ -56,7 +56,8 @@ function ThemedTabs() {
           name="Quests"
           options={{
             tabBarLabel: "Quests",
-            tabBarIcon: ({ color, size }) => renderIcon("tasks", color, size),
+            tabBarIcon: ({ color, size }) =>
+              renderIcon("square-check-big", color, size),
             tabBarButton: (props) => (
               <Pressable {...props} android_ripple={{ color: "transparent" }} />
             ),
@@ -78,7 +79,7 @@ function ThemedTabs() {
           name="Bosses"
           options={{
             tabBarLabel: "Bosses",
-            tabBarIcon: ({ color, size }) => renderIcon("bosses", color, size),
+            tabBarIcon: ({ color, size }) => renderIcon("swords", color, size),
             tabBarButton: (props) => (
               <Pressable {...props} android_ripple={{ color: "transparent" }} />
             ),
@@ -89,7 +90,8 @@ function ThemedTabs() {
           name="Profile"
           options={{
             tabBarLabel: "Profile",
-            tabBarIcon: ({ color, size }) => renderIcon("profile", color, size),
+            tabBarIcon: ({ color, size }) =>
+              renderIcon("person-standing", color, size),
             tabBarButton: (props) => (
               <Pressable {...props} android_ripple={{ color: "transparent" }} />
             ),

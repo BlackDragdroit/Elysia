@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useContext } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useContext, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { FadeIn } from "../../assets/styles/Animations/Animations";
+import { FadeIn } from "@/assets/styles/Animations/Animations";
 import { useSearchParams } from "expo-router/build/hooks";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { styles, colors } from "@/assets/styles/common";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
-import renderIcon from "../../assets/styles/renderIcon";
+import renderIcon from "@/assets/styles/renderIcon";
+import Box from "@/components/UI/Box";
 
 const Quests = () => {
   let params = useSearchParams();
@@ -29,63 +30,103 @@ const Quests = () => {
       style={{ flex: 1 }}
     >
       <FadeIn speed={300}>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignContent: "center",
-          }}
-        >
+        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View
             style={{
-              marginTop: 40,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "90%",
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center",
             }}
           >
-            <Text style={[styles.subTitle, { color: textColor }]}>
-              All Quests
-            </Text>
-            <View style={{ marginRight: 10 }}>
-              <NewQuestButton />
+            <View
+              style={{
+                marginTop: 40,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "90%",
+              }}
+            >
+              <Text
+                style={[styles.subTitle, { color: textColor, marginLeft: 0 }]}
+              >
+                All Quests
+              </Text>
+              <View>
+                <NewQuestButton />
+              </View>
             </View>
           </View>
-        </View>
-        {taskMapper(textColor)}
+          {taskMapper(
+            textColor,
+            isDarkmode ? "#27272a" : "#f5f5f4",
+            isDarkmode ? "black" : "white"
+          )}
+        </ScrollView>
       </FadeIn>
     </LinearGradient>
   );
 };
 
-const taskMapper = (textColor) => {
+const taskMapper = (textColor, back1, back2) => {
+  const [selected, setSelected] = useState(0);
+
   return (
     <View style={{ alignItems: "center" }}>
       <View
         style={{
-          width: "80%",
+          width: "90%",
           height: 35,
           flexDirection: "row",
           justifyContent: "space-around",
-          backgroundColor: "#f5f5f4",
+          backgroundColor: back1,
           borderRadius: 5,
         }}
       >
-        <View style={localStyles.textContainer}>
+        <Pressable
+          style={[
+            localStyles.textContainer,
+            { backgroundColor: selected == 0 ? back2 : "transparent" },
+          ]}
+          onPress={() => setSelected(0)}
+        >
           {renderIcon("calendar", textColor, 14)}
           <Text style={[localStyles.text, { color: textColor }]}>Today</Text>
-        </View>
-        <View style={localStyles.textContainer}>
-          {renderIcon("upcoming", textColor, 14)}
+        </Pressable>
+
+        <Pressable
+          style={[
+            localStyles.textContainer,
+            { backgroundColor: selected == 1 ? back2 : "transparent" },
+          ]}
+          onPress={() => setSelected(1)}
+        >
+          {renderIcon("calendar-arrow-up", textColor, 14)}
           <Text style={[localStyles.text, { color: textColor }]}>Upcoming</Text>
-        </View>
-        <View style={localStyles.textContainer}>
-          {renderIcon("completed", textColor, 14)}
+        </Pressable>
+        <Pressable
+          style={[
+            localStyles.textContainer,
+            { backgroundColor: selected == 2 ? back2 : "transparent" },
+          ]}
+          onPress={() => setSelected(2)}
+        >
+          {renderIcon("calendar-check", textColor, 14)}
           <Text style={[localStyles.text, { color: textColor }]}>
             Completed
           </Text>
-        </View>
+        </Pressable>
       </View>
+      {selected == 0 && (
+        <Box>No quests for today. Add a new quest to get started!</Box>
+      )}
+      {selected == 1 && (
+        <Box>
+          No upcoming quests scheduled. Plan ahead by adding some future quests!
+        </Box>
+      )}
+      {selected == 2 && (
+        <Box>You haven't completed any quests yet. Get to work!</Box>
+      )}
     </View>
   );
 };
@@ -93,7 +134,7 @@ const taskMapper = (textColor) => {
 const localStyles = StyleSheet.create({
   textContainer: {
     backgroundColor: "white",
-    width: "28%",
+    width: "32%",
     height: "80%",
     flexDirection: "row",
     marginVertical: "auto",

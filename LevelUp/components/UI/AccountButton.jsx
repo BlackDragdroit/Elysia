@@ -5,7 +5,7 @@ import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import renderIcon from "@/assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
-const AccountButton = () => {
+const AccountButton = ({ size = 48 }) => {
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
@@ -30,10 +30,10 @@ const AccountButton = () => {
   return (
     <View
       style={{
-        width: 48,
-        height: 48,
+        width: size,
+        height: size,
         backgroundColor: isDarkmode ? "#e5e5e5" : "#262626",
-        borderRadius: 25,
+        borderRadius: 360,
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
@@ -46,19 +46,19 @@ const AccountButton = () => {
           position: "absolute",
           top: -2,
           right: -2,
-          width: 20,
-          height: 20,
+          width: size / 2.5,
+          height: size / 2.5,
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
           backgroundColor: colors.purple,
-          borderRadius: 10,
+          borderRadius: 360,
         }}
       >
         <Text
           style={{
             color: isDarkmode ? "white" : "black",
-            fontSize: 10,
+            fontSize: size / 4.5,
             fontWeight: "bold",
             textAlign: "center",
             justifyContent: "center",
@@ -68,7 +68,7 @@ const AccountButton = () => {
           {level}
         </Text>
       </View>
-      {renderIcon("profile", isDarkmode ? "black" : "white")}
+      {renderIcon("person-standing", isDarkmode ? "black" : "white", size / 2)}
     </View>
   );
 };

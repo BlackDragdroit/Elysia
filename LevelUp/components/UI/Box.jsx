@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 
-const Box = ({ children }) => {
+const Box = ({ children, width = "90%", fontSize = 18, style = {} }) => {
   const { theme } = useContext(ThemeContext);
   const isDarkmode = theme === "dark" ? true : false;
 
@@ -13,21 +13,14 @@ const Box = ({ children }) => {
 
   return (
     <View
-      style={{
-        flex: 1,
-        alignContent: "center",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <View
-        style={{
+      style={[
+        {
           padding: 10,
           flexDirection: "row",
           flexWrap: "wrap",
           backgroundColor: bColor,
           borderRadius: 10,
-          width: "95%",
+          width: width,
           minHeight: 100,
           marginTop: 10,
           justifyContent: "center",
@@ -39,23 +32,26 @@ const Box = ({ children }) => {
           shadowOffset: { width: 0, height: 0 },
           shadowOpacity: 0.25,
           shadowRadius: 5,
-        }}
-      >
-        {typeof children == "string" ? (
-          <Text
-            style={{
-              color: boxTextColor,
-              fontSize: 18,
-              textAlign: "center",
-              fontFamily: font,
-            }}
-          >
-            {children}
-          </Text>
-        ) : (
-          children
-        )}
-      </View>
+        },
+        style,
+      ]}
+    >
+      {typeof children == "string" ? (
+        <Text
+          style={{
+            color: boxTextColor,
+            fontSize: fontSize,
+            textAlign: "center",
+            alignContent: "center",
+            alignItems: "center",
+            fontFamily: font,
+          }}
+        >
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
     </View>
   );
 };

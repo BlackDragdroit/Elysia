@@ -1,13 +1,17 @@
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import React, { useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { FadeIn } from "../../assets/styles/Animations/Animations";
-import { commonStyles, colors } from "../../assets/styles/common";
+import { FadeIn } from "@/assets/styles/Animations/Animations";
+import { styles, colors } from "@/assets/styles/common";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { NewQuestButton } from "@/components/UI/NewQuestButton";
+import Box from "@/components/UI/Box";
 const Bosses = () => {
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
+
+  const textColor = isDarkmode ? colors.textDark : colors.textLight;
 
   return (
     <LinearGradient
@@ -21,9 +25,34 @@ const Bosses = () => {
       style={{ flex: 1 }}
     >
       <FadeIn speed={300}>
-        <View style={commonStyles.container}>
-          <StatusBar translucent />
-        </View>
+        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center",
+            }}
+          >
+            <View
+              style={{
+                marginTop: 40,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "90%",
+              }}
+            >
+              <Text
+                style={[styles.subTitle, { color: textColor, marginLeft: 0 }]}
+              >
+                Boss Battles
+              </Text>
+              <View style={{ marginRight: 10 }}>
+                <NewQuestButton />
+              </View>
+            </View>
+            <Box>No active boss battles. Create a new challenge!</Box>
+          </View>
+        </ScrollView>
       </FadeIn>
     </LinearGradient>
   );

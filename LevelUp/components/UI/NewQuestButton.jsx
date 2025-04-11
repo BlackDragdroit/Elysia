@@ -16,7 +16,7 @@ export const NewQuestButton = ({ size = 35 }) => {
         marginBottom: 20,
       }}
     >
-      {renderIcon("newQuest", "white", size / 2)}
+      {renderIcon("plus", "white", size / 2)}
     </View>
   );
 };
