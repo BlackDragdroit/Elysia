@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import renderIcon from "../../assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
+import { MotiView } from "moti";
 
 export const Achievement = ({ icon, title, descr }) => {
   const { theme } = useContext(ThemeContext);
@@ -42,7 +43,27 @@ export const Achievement = ({ icon, title, descr }) => {
           alignItems: "center",
         }}
       >
-        <View
+        {/* <View
+          style={{
+            height: 50,
+            width: 50,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: isDarkmode ? "#333333" : "#f5f5f5",
+            borderRadius: 360,
+          }}
+        > */}
+        <MotiView
+          from={{
+            translateY: 0,
+          }}
+          animate={{ translateY: 5 }}
+          transition={{
+            loop: true,
+            type: "timing",
+            duration: 1500,
+            delay: 100,
+          }}
           style={{
             height: 50,
             width: 50,
@@ -53,7 +74,7 @@ export const Achievement = ({ icon, title, descr }) => {
           }}
         >
           {renderIcon(icon, colors.pink, 21)}
-        </View>
+        </MotiView>
       </View>
       <Text
         style={{

@@ -5,7 +5,8 @@ import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import renderIcon from "@/assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
-const AccountButton = ({ size = 48 }) => {
+import { MotiView } from "moti";
+const AccountButton = ({ size = 48, animated = false }) => {
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
@@ -41,33 +42,71 @@ const AccountButton = ({ size = 48 }) => {
         marginRight: 10,
       }}
     >
-      <View
-        style={{
-          position: "absolute",
-          top: -2,
-          right: -2,
-          width: size / 2.5,
-          height: size / 2.5,
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          backgroundColor: colors.purple,
-          borderRadius: 360,
-        }}
-      >
-        <Text
+      {animated ? (
+        <MotiView
+          // from={{ translateY: 0 }}
+          // animate={{ translateY: 6 }}
+          // transition={{
+          //   loop: true,
+          //   type: "timing",
+          //   duration: 800,
+          //   delay: 50,
+          // }}
           style={{
-            color: isDarkmode ? "white" : "black",
-            fontSize: size / 4.5,
-            fontWeight: "bold",
-            textAlign: "center",
+            position: "absolute",
+            bottom: -2,
+            right: -2,
+            width: size / 2.3,
+            height: size / 2.3,
             justifyContent: "center",
-            width: "100%",
+            alignItems: "center",
+            textAlign: "center",
+            backgroundColor: colors.purple,
+            borderRadius: 360,
           }}
         >
-          {level}
-        </Text>
-      </View>
+          <Text
+            style={{
+              color: isDarkmode ? "white" : "black",
+              fontSize: size / 4.5,
+              fontWeight: "bold",
+              textAlign: "center",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            {level}
+          </Text>
+        </MotiView>
+      ) : (
+        <MotiView
+          style={{
+            position: "absolute",
+            top: -2,
+            right: -2,
+            width: size / 2.5,
+            height: size / 2.5,
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            backgroundColor: colors.purple,
+            borderRadius: 360,
+          }}
+        >
+          <Text
+            style={{
+              color: isDarkmode ? "white" : "black",
+              fontSize: size / 4.5,
+              fontWeight: "bold",
+              textAlign: "center",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            {level}
+          </Text>
+        </MotiView>
+      )}
       {renderIcon("person-standing", isDarkmode ? "black" : "white", size / 2)}
     </View>
   );

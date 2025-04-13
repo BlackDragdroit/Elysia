@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   StatusBar,
@@ -14,6 +14,8 @@ import { FadeIn } from "@/assets/styles/Animations/Animations";
 import { styles, colors } from "@/assets/styles/common";
 import Box from "../../components/UI/Box";
 import { Achievement } from "../../components/UI/Achievement";
+import { useNavigation } from "expo-router";
+import { AddQuest } from "../../components/UI/AddQuest";
 
 let font = "Roboto-Variable";
 export default function Home() {
@@ -26,11 +28,15 @@ export default function Home() {
 
   // let showHome = true;
 
+  const navigation = useNavigation();
+
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
 
   const textColor = isDarkmode ? colors.textDark : colors.textLight;
+
+  const [newQuestUI, setNewQuestUI] = useState(false);
 
   return (
     <LinearGradient
@@ -43,13 +49,14 @@ export default function Home() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
+      {newQuestUI ? <AddQuest onClose={setNewQuestUI} /> : ""}
       <FadeIn speed={300}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View style={styles.subTitleView}>
             <Text style={[styles.subTitle, { color: textColor }]}>
               Today's Quests
             </Text>
-            <Pressable>
+            <Pressable onPress={setNewQuestUI}>
               <Text style={styles.subTitleText}>+ New Task</Text>
             </Pressable>
           </View>
@@ -74,7 +81,7 @@ export default function Home() {
             <Text style={[styles.subTitle, { color: textColor }]}>
               Recent Achievements
             </Text>
-            <Pressable>
+            <Pressable onPress={() => navigation.navigate("Profile")}>
               <Text style={styles.subTitleText}>View All {"-->"}</Text>
             </Pressable>
           </View>

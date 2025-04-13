@@ -65,11 +65,11 @@ const Profile = () => {
               }}
             >
               <Box style={{ flexDirection: "column" }}>
-                <AccountButton size={80} />
+                <AccountButton size={80} animated={true} />
                 <Text
                   style={[styles.subTitle, { marginTop: 20, color: textColor }]}
                 >
-                  Alex Johnson
+                  Alex Johncina
                 </Text>
                 <Text style={{ color: textColor }}>@{"demo"}</Text>
                 <View
