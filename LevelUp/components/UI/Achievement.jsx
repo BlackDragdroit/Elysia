@@ -22,7 +22,7 @@ export const Achievement = ({ icon, title, descr }) => {
         margin: 6,
         alignItems: "center",
         textAlign: "center",
-        width: 150,
+        width: "46%",
         height: 130,
         backgroundColor: isDarkmode ? "#262626" : "white",
         borderRadius: 5,
