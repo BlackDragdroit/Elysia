@@ -1,17 +1,20 @@
-import { ScrollView, Text, View } from "react-native";
-import React, { useContext } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import React, { useContext, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
 import { styles, colors } from "@/assets/styles/common";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
 import Box from "@/components/UI/Box";
+import { AddBoss } from "@/components/UI/AddBoss";
 const Bosses = () => {
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
 
   const textColor = isDarkmode ? colors.textDark : colors.textLight;
+
+  const [newBossUI, setNewBossUI] = useState(false);
 
   return (
     <LinearGradient
@@ -24,6 +27,7 @@ const Bosses = () => {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
+      {newBossUI ? <AddBoss onClose={setNewBossUI} /> : ""}
       <FadeIn speed={300}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View
@@ -47,7 +51,9 @@ const Bosses = () => {
                 Boss Battles
               </Text>
               <View style={{ marginRight: 10 }}>
-                <NewQuestButton />
+                <Pressable onPress={setNewBossUI}>
+                  <NewQuestButton />
+                </Pressable>
               </View>
             </View>
             <Box>No active boss battles. Create a new challenge!</Box>

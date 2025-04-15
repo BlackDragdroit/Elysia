@@ -28,7 +28,7 @@ export const AddQuest = ({ onClose }) => {
     >
       <View
         style={{
-          height: 400,
+          height: 450,
           width: "100%",
           alignItems: "center",
           backgroundColor: isDarkmode ? "#09090b" : "white",
@@ -70,13 +70,13 @@ export const AddQuest = ({ onClose }) => {
             Add New Quest
           </Text>
         </View>
-        {AddQuestContent(isDarkmode)}
+        {AddQuestContent(isDarkmode, onClose)}
       </View>
     </View>
   );
 };
 
-const AddQuestContent = (isDarkmode) => {
+const AddQuestContent = (isDarkmode, onClose) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("core");
   const [items, setItems] = useState([
@@ -110,9 +110,7 @@ const AddQuestContent = (isDarkmode) => {
       }}
     >
       <View style={{ width: "90%", marginBottom: 10 }}>
-        <Text
-          style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
-        >
+        <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
           Quest Title
         </Text>
       </View>
@@ -245,7 +243,6 @@ const AddQuestContent = (isDarkmode) => {
             }}
           />
         </View>
-        {/* <DropDownPicker /> */}
       </View>
       <View
         style={{
@@ -287,12 +284,63 @@ const AddQuestContent = (isDarkmode) => {
           }}
         >
           {new Intl.DateTimeFormat("en-US", {
+            weekday: "short",
             year: "numeric",
             month: "long", // e.g., "April"
             day: "2-digit",
           }).format(date)}
         </Text>
       </Pressable>
+
+      <View
+        style={{
+          width: "90%",
+          flexDirection: "row",
+          marginTop: 40,
+          justifyContent: "space-between",
+        }}
+      >
+        <Pressable
+          style={{
+            borderWidth: 1,
+            borderColor: isDarkmode ? "white" : "black",
+            height: 40,
+            width: "48%",
+            borderRadius: 5,
+            justifyContent: "center",
+          }}
+          onPress={() => onClose()}
+        >
+          <Text
+            style={{
+              color: isDarkmode ? "white" : "black",
+              fontFamily: "Roboto-Variable",
+              textAlign: "center",
+            }}
+          >
+            Cancel
+          </Text>
+        </Pressable>
+        <Pressable
+          style={{
+            height: 40,
+            width: "48%",
+            borderRadius: 5,
+            justifyContent: "center",
+            backgroundColor: colors.purple,
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontFamily: "Roboto-Variable",
+              textAlign: "center",
+            }}
+          >
+            Create Quest
+          </Text>
+        </Pressable>
+      </View>
 
       {showDatePicker && (
         <DateTimePicker
@@ -301,7 +349,6 @@ const AddQuestContent = (isDarkmode) => {
           themeVariant="light"
         />
       )}
-
       {/* <TextInput
         style={[
           {
