@@ -103,7 +103,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
         width: "100%",
         alignItems: "center",
         flexDirection: "column",
-        paddingBottom: 40,
+        paddingBottom: 100,
       }}
     >
       <View style={{ width: "90%", marginBottom: 10 }}>
@@ -147,29 +147,31 @@ const AddQuestContent = (isDarkmode, onClose) => {
       <View
         style={{
           height: 40,
-          width: "100%",
+          width: "90%",
           alignItems: "center",
           alignContent: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
           flexDirection: "row",
-          borderWidth: 1,
-          borderColor: "red",
+          marginTop: 20,
+          marginBottom: 20,
         }}
       >
         <TextInput
           style={[
             {
-              width: "90%",
+              width: "100%",
               height: 80,
               borderWidth: 1,
               borderColor: isDarkmode ? "white" : "black",
               borderRadius: 10,
               color: isDarkmode ? "#404040" : "black",
               backgroundColor: isDarkmode ? "black" : "white",
+              textAlign: "left",
+              textAlignVertical: "top",
             },
           ]}
           placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-          placeholder="e.g. Learn Spanish Basics"
+          placeholder="e.g. Complete the beginner's course"
         />
       </View>
       <View
