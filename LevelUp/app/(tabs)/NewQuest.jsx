@@ -1,16 +1,27 @@
-import { useEffect } from "react";
-import { useRouter } from "expo-router";
-import { Button, Text, View } from "react-native";
+import { AddBoss } from "@/components/UI/AddBoss";
+import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { useContext } from "react";
+import { View } from "react-native";
+import { router } from "expo-router";
 
 const NewQuest = () => {
-  const router = useRouter();
+  const { theme } = useContext(ThemeContext);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>New Quest</Text>
-      <Button title="Go Back" onPress={() => router.back()} />
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: theme == "dark" ? "black" : "white",
+      }}
+    >
+      <AddBoss onClose={backHandling} />
     </View>
   );
+};
+
+const backHandling = () => {
+  router.back();
 };
 
 export default NewQuest;

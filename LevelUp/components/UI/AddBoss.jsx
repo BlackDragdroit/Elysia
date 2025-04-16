@@ -1,5 +1,12 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Pressable, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { styles, colors } from "@/assets/styles/common";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import renderIcon from "../../assets/styles/renderIcon";
@@ -28,7 +35,8 @@ export const AddBoss = ({ onClose }) => {
     >
       <View
         style={{
-          height: 450,
+          minHeight: 450,
+          maxHeight: "100%",
           width: "100%",
           alignItems: "center",
           backgroundColor: isDarkmode ? "#09090b" : "white",
@@ -37,60 +45,48 @@ export const AddBoss = ({ onClose }) => {
           borderColor: "#1f1f21",
         }}
       >
-        <View
-          style={{
-            width: "100%",
-            height: "20%",
-            justifyContent: "center",
-          }}
-        >
-          <Pressable
+        <ScrollView>
+          <View
             style={{
-              position: "absolute",
-              top: 20,
-              right: 10,
+              width: "100%",
+              height: "20%",
               justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1,
             }}
-            onPress={() => onClose()}
           >
-            {renderIcon("x", "gray", 16)}
-          </Pressable>
-          <Text
-            style={[
-              styles.subTitle,
-              {
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                textAlign: "center",
-                fontWeight: "bold",
-              },
-            ]}
-          >
-            Add Boss Battle
-          </Text>
-        </View>
-        {AddQuestContent(isDarkmode, onClose)}
+            <Pressable
+              style={{
+                position: "absolute",
+                top: 20,
+                right: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1,
+              }}
+              onPress={() => onClose()}
+            >
+              {renderIcon("x", "gray", 16)}
+            </Pressable>
+            <Text
+              style={[
+                styles.subTitle,
+                {
+                  color: isDarkmode ? colors.textDark : colors.textLight,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                },
+              ]}
+            >
+              Add Boss Battle
+            </Text>
+          </View>
+          {AddQuestContent(isDarkmode, onClose)}
+        </ScrollView>
       </View>
     </View>
   );
 };
 
 const AddQuestContent = (isDarkmode, onClose) => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("core");
-  const [items, setItems] = useState([
-    { label: "Core Quest", value: "core" },
-    { label: "Optional Quest", value: "optional" },
-  ]);
-  const [openDif, setOpenDif] = useState(false);
-  const [valueDif, setValueDif] = useState("100");
-  const [itemsDif, setItemsDif] = useState([
-    { label: "Easy", value: "100" },
-    { label: "Medium", value: "300" },
-    { label: "Hard", value: "500" },
-    { label: "Epic", value: "1000" },
-  ]);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -107,11 +103,12 @@ const AddQuestContent = (isDarkmode, onClose) => {
         width: "100%",
         alignItems: "center",
         flexDirection: "column",
+        paddingBottom: 40,
       }}
     >
       <View style={{ width: "90%", marginBottom: 10 }}>
         <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
-          Quest Title
+          Boss Title
         </Text>
       </View>
 
@@ -128,7 +125,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
           },
         ]}
         placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-        placeholder="What needs to be done?"
+        placeholder="e.g. Learn Spanish Basics"
       />
 
       <View
@@ -142,12 +139,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
       >
         <View style={{ width: "48%" }}>
           <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
-            Quest Type
-          </Text>
-        </View>
-        <View style={{ width: "48%" }}>
-          <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
-            Difficulty
+            Description
           </Text>
         </View>
       </View>
@@ -155,94 +147,30 @@ const AddQuestContent = (isDarkmode, onClose) => {
       <View
         style={{
           height: 40,
-          width: "90%",
+          width: "100%",
           alignItems: "center",
+          alignContent: "center",
           justifyContent: "space-between",
           flexDirection: "row",
+          borderWidth: 1,
+          borderColor: "red",
         }}
       >
-        <View style={{ width: "48%" }}>
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            placeholderStyle={{
-              color: isDarkmode ? colors.textDark : colors.textLight,
-            }}
-            style={{
-              minHeight: 40,
-              width: "100%",
-              backgroundColor: isDarkmode ? "black" : "white",
+        <TextInput
+          style={[
+            {
+              width: "90%",
+              height: 80,
               borderWidth: 1,
               borderColor: isDarkmode ? "white" : "black",
-            }}
-            dropDownContainerStyle={{
-              backgroundColor: isDarkmode ? "black" : "white",
-              marginTop: 5,
-              width: "100%",
               borderRadius: 10,
-              borderWidth: 1,
-              borderColor: isDarkmode ? "white" : "black",
-              justifyContent: "center",
-            }}
-            textStyle={{
-              color: isDarkmode ? "white" : "black",
-            }}
-            selectedItemContainerStyle={{
-              backgroundColor: isDarkmode ? "#27272a" : "lightgray",
-            }}
-            tickIconStyle={{
-              tintColor: isDarkmode ? colors.textDark : colors.textLight,
-            }}
-            arrowIconStyle={{
-              tintColor: isDarkmode ? colors.textDark : colors.textLight,
-            }}
-          />
-        </View>
-        <View style={{ width: "48%" }}>
-          <DropDownPicker
-            open={openDif}
-            value={valueDif}
-            items={itemsDif}
-            setOpen={setOpenDif}
-            setValue={setValueDif}
-            setItems={setItemsDif}
-            placeholderStyle={{
-              color: isDarkmode ? colors.textDark : colors.textLight,
-            }}
-            style={{
-              minHeight: 40,
-              width: "100%",
+              color: isDarkmode ? "#404040" : "black",
               backgroundColor: isDarkmode ? "black" : "white",
-              borderWidth: 1,
-              borderColor: isDarkmode ? "white" : "black",
-            }}
-            dropDownContainerStyle={{
-              backgroundColor: isDarkmode ? "black" : "white",
-              marginTop: 5,
-              width: "100%",
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: isDarkmode ? "white" : "black",
-              justifyContent: "center",
-            }}
-            textStyle={{
-              color: isDarkmode ? "white" : "black",
-            }}
-            selectedItemContainerStyle={{
-              backgroundColor: isDarkmode ? "#27272a" : "lightgray",
-            }}
-            tickIconStyle={{
-              tintColor: isDarkmode ? colors.textDark : colors.textLight,
-            }}
-            arrowIconStyle={{
-              tintColor: isDarkmode ? colors.textDark : colors.textLight,
-            }}
-          />
-        </View>
+            },
+          ]}
+          placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+          placeholder="e.g. Learn Spanish Basics"
+        />
       </View>
       <View
         style={{

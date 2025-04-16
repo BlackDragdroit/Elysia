@@ -12,10 +12,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
 import { styles, colors } from "@/assets/styles/common";
-import Box from "../../components/UI/Box";
-import { Achievement } from "../../components/UI/Achievement";
+import Box from "@/components/UI/Box";
+import { Achievement } from "@/components/UI/Achievement";
 import { useNavigation } from "expo-router";
-import { AddQuest } from "../../components/UI/AddQuest";
+import { AddQuest } from "@/components/UI/AddQuest";
+import { AddBoss } from "@/components/UI/AddBoss";
 
 let font = "Roboto-Variable";
 export default function Home() {
@@ -37,6 +38,7 @@ export default function Home() {
   const textColor = isDarkmode ? colors.textDark : colors.textLight;
 
   const [newQuestUI, setNewQuestUI] = useState(false);
+  const [newBossUI, setNewBossUI] = useState(false);
 
   return (
     <LinearGradient
@@ -50,6 +52,7 @@ export default function Home() {
       style={{ flex: 1 }}
     >
       {newQuestUI ? <AddQuest onClose={setNewQuestUI} /> : ""}
+      {newBossUI ? <AddBoss onClose={setNewBossUI} /> : ""}
       <FadeIn speed={300}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View style={styles.subTitleView}>
@@ -68,7 +71,7 @@ export default function Home() {
             <Text style={[styles.subTitle, { color: textColor }]}>
               Active Boss Battles
             </Text>
-            <Pressable>
+            <Pressable onPress={setNewBossUI}>
               <Text style={styles.subTitleText}>+ New Boss</Text>
             </Pressable>
           </View>
