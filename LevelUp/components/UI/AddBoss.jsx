@@ -19,8 +19,6 @@ export const AddBoss = ({ onClose }) => {
 
   const isDarkmode = theme === "dark" ? true : false;
 
-  const navigator = useNavigation();
-
   return (
     <View
       style={{
@@ -49,7 +47,7 @@ export const AddBoss = ({ onClose }) => {
           <View
             style={{
               width: "100%",
-              height: "20%",
+              height: "10%",
               justifyContent: "center",
             }}
           >
@@ -90,11 +88,36 @@ const AddQuestContent = (isDarkmode, onClose) => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  const [steps, setSteps] = useState([
+    { id: Date.now(), text: "" },
+    { id: Date.now() + 1, text: "" },
+  ]);
+
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
     }
     setShowDatePicker(false);
+  };
+
+  const addStep = () => {
+    setSteps((prevSteps) => [...prevSteps, { id: Date.now(), text: "" }]);
+  };
+
+  const removeStep = (id) => {
+    setSteps((prevSteps) => {
+      if (prevSteps.length > 2) {
+        console.log(prevSteps);
+        return prevSteps.filter((step) => step.id !== id);
+      }
+      return prevSteps;
+    });
+  };
+
+  const updateStepText = (id, text) => {
+    setSteps((prevSteps) =>
+      prevSteps.map((step) => (step.id === id ? { ...step, text } : step))
+    );
   };
 
   return (
@@ -103,183 +126,242 @@ const AddQuestContent = (isDarkmode, onClose) => {
         width: "100%",
         alignItems: "center",
         flexDirection: "column",
-        paddingBottom: 100,
+        paddingBottom: 50,
       }}
     >
-      <View style={{ width: "90%", marginBottom: 10 }}>
-        <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
-          Boss Title
-        </Text>
-      </View>
-
-      <TextInput
-        style={[
-          {
-            width: "90%",
-            height: 40,
-            borderWidth: 1,
-            borderColor: isDarkmode ? "white" : "black",
-            borderRadius: 10,
-            color: isDarkmode ? "#404040" : "black",
-            backgroundColor: isDarkmode ? "black" : "white",
-          },
-        ]}
-        placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-        placeholder="e.g. Learn Spanish Basics"
-      />
-
-      <View
-        style={{
-          width: "90%",
-          marginTop: 20,
-          marginBottom: 10,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ width: "48%" }}>
-          <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
-            Description
+      <View style={{ width: "90%" }}>
+        <View style={{ width: "100%", marginBottom: 10 }}>
+          <Text
+            style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+          >
+            Boss Title
           </Text>
         </View>
-      </View>
 
-      <View
-        style={{
-          height: 40,
-          width: "90%",
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-          flexDirection: "row",
-          marginTop: 20,
-          marginBottom: 20,
-        }}
-      >
         <TextInput
           style={[
             {
               width: "100%",
-              height: 80,
+              height: 40,
               borderWidth: 1,
               borderColor: isDarkmode ? "white" : "black",
               borderRadius: 10,
-              color: isDarkmode ? "#404040" : "black",
+              color: isDarkmode ? colors.textDark : colors.textLight,
               backgroundColor: isDarkmode ? "black" : "white",
-              textAlign: "left",
-              textAlignVertical: "top",
             },
           ]}
           placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-          placeholder="e.g. Complete the beginner's course"
+          placeholder="e.g. Learn Spanish Basics"
         />
-      </View>
-      <View
-        style={{
-          width: "90%",
-          marginTop: 20,
-          marginBottom: 10,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
-          Due Date & Time
-        </Text>
-      </View>
 
-      <Pressable
-        style={{
-          width: "90%",
-          height: 40,
-          borderWidth: 1,
-          borderColor: isDarkmode ? "white" : "black",
-          borderRadius: 10,
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-          flexDirection: "row",
-        }}
-        onPress={setShowDatePicker}
-      >
-        {renderIcon(
-          "calendar",
-          isDarkmode ? colors.textDark : colors.textLight,
-          21
-        )}
-        <Text
+        <View
           style={{
-            color: isDarkmode ? colors.textDark : colors.textLight,
-            textAlign: "center",
+            width: "100%",
+            marginTop: 20,
+            marginBottom: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
-          {new Intl.DateTimeFormat("en-US", {
-            weekday: "short",
-            year: "numeric",
-            month: "long", // e.g., "April"
-            day: "2-digit",
-          }).format(date)}
-        </Text>
-      </Pressable>
+          <View style={{ width: "48%" }}>
+            <Text
+              style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+            >
+              Description
+            </Text>
+          </View>
+        </View>
 
-      <View
-        style={{
-          width: "90%",
-          flexDirection: "row",
-          marginTop: 40,
-          justifyContent: "space-between",
-        }}
-      >
+        <View
+          style={{
+            height: 40,
+            width: "100%",
+            alignItems: "center",
+            alignContent: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            marginTop: 20,
+            marginBottom: 20,
+          }}
+        >
+          <TextInput
+            style={[
+              {
+                width: "100%",
+                height: 80,
+                borderWidth: 1,
+                borderColor: isDarkmode ? "white" : "black",
+                borderRadius: 10,
+                color: isDarkmode ? colors.textDark : colors.textLight,
+                backgroundColor: isDarkmode ? "black" : "white",
+                textAlign: "left",
+                textAlignVertical: "top",
+              },
+            ]}
+            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+            placeholder="e.g. Complete the beginner's course"
+          />
+        </View>
+
+        <View style={{ width: "100%", marginTop: 20 }}>
+          <Text
+            style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+          >
+            Boss Battle Steps (at least 2 required)
+          </Text>
+        </View>
+
+        <View
+          style={{
+            width: "90%",
+            justifyContent: "center",
+            alignContent: "center",
+            gap: 5,
+            marginTop: 10,
+          }}
+        >
+          {steps.map((step) => (
+            <Step
+              key={step.id}
+              id={step.id}
+              text={step.text}
+              isDarkmode={isDarkmode}
+              onRemove={removeStep}
+              onUpdateText={updateStepText}
+            />
+          ))}
+        </View>
+
         <Pressable
           style={{
+            width: "100%",
             borderWidth: 1,
-            borderColor: isDarkmode ? "white" : "black",
-            height: 40,
-            width: "48%",
-            borderRadius: 5,
+            borderColor: "white",
             justifyContent: "center",
+            borderRadius: 10,
+            height: 40,
+            marginTop: 10,
           }}
-          onPress={() => onClose()}
+          onPress={addStep}
         >
           <Text
             style={{
-              color: isDarkmode ? "white" : "black",
-              fontFamily: "Roboto-Variable",
+              color: isDarkmode ? colors.textDark : colors.textLight,
               textAlign: "center",
             }}
           >
-            Cancel
+            + Add Step
           </Text>
         </Pressable>
+
+        <View
+          style={{
+            width: "100%",
+            marginTop: 20,
+            marginBottom: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text
+            style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+          >
+            Due Date & Time
+          </Text>
+        </View>
+
         <Pressable
           style={{
+            width: "100%",
             height: 40,
-            width: "48%",
-            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: isDarkmode ? colors.textDark : colors.textLight,
+            borderRadius: 10,
             justifyContent: "center",
-            backgroundColor: colors.purple,
+            alignItems: "center",
+            gap: 10,
+            flexDirection: "row",
           }}
+          onPress={setShowDatePicker}
         >
+          {renderIcon(
+            "calendar",
+            isDarkmode ? colors.textDark : colors.textLight,
+            21
+          )}
           <Text
             style={{
-              color: "white",
-              fontFamily: "Roboto-Variable",
+              color: isDarkmode ? colors.textDark : colors.textLight,
               textAlign: "center",
             }}
           >
-            Create Quest
+            {new Intl.DateTimeFormat("en-US", {
+              weekday: "short",
+              year: "numeric",
+              month: "long", // e.g., "April"
+              day: "2-digit",
+            }).format(date)}
           </Text>
         </Pressable>
-      </View>
 
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          onChange={onChangeDate}
-          themeVariant="light"
-        />
-      )}
-      {/* <TextInput
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            marginTop: 40,
+            justifyContent: "space-between",
+          }}
+        >
+          <Pressable
+            style={{
+              borderWidth: 1,
+              borderColor: isDarkmode ? colors.textDark : colors.textLight,
+              height: 40,
+              width: "48%",
+              borderRadius: 5,
+              justifyContent: "center",
+            }}
+            onPress={() => onClose()}
+          >
+            <Text
+              style={{
+                color: isDarkmode ? colors.textDark : colors.textLight,
+                fontFamily: "Roboto-Variable",
+                textAlign: "center",
+              }}
+            >
+              Cancel
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              height: 40,
+              width: "48%",
+              borderRadius: 5,
+              justifyContent: "center",
+              backgroundColor: colors.purple,
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontFamily: "Roboto-Variable",
+                textAlign: "center",
+              }}
+            >
+              Create Quest
+            </Text>
+          </Pressable>
+        </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            onChange={onChangeDate}
+            themeVariant="light"
+          />
+        )}
+        {/* <TextInput
         style={[
           {
             width: "90%",
@@ -287,13 +369,14 @@ const AddQuestContent = (isDarkmode, onClose) => {
             borderWidth: 1,
             borderColor: isDarkmode ? "white" : "black",
             borderRadius: 10,
-            color: isDarkmode ? "#404040" : "black",
+            color: isDarkmode ? "white" : "black",
             backgroundColor: isDarkmode ? "black" : "white",
           },
         ]}
         placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
         placeholder="What needs to be done?"
       /> */}
+      </View>
     </View>
   );
 };
@@ -301,3 +384,42 @@ const AddQuestContent = (isDarkmode, onClose) => {
 // const DateTimePicker = ({ isDarkmode, style = {} }) => {
 //   return <View style={style}></View>;
 // };
+
+const Step = ({ id, text, isDarkmode, onRemove, onUpdateText }) => {
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <TextInput
+        style={[
+          {
+            width: "90%",
+            height: 40,
+            borderWidth: 1,
+            borderColor: isDarkmode ? colors.textDark : colors.textLight,
+            borderRadius: 10,
+            color: isDarkmode ? colors.textDark : colors.textLight,
+            backgroundColor: isDarkmode ? "black" : "white",
+            textAlign: "left",
+            textAlignVertical: "top",
+            flexShrink: 0,
+          },
+        ]}
+        placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+        placeholder="e.g. Complete alphabet lessons"
+        value={text}
+        onChangeText={(newText) => onUpdateText(id, newText)}
+      />
+      <Pressable
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "21%",
+          flexShrink: 0,
+        }}
+        onPress={() => onRemove(id)}
+      >
+        {renderIcon("x", isDarkmode ? colors.textDark : colors.textLight, 21)}
+      </Pressable>
+    </View>
+  );
+};

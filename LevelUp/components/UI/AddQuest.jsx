@@ -110,7 +110,9 @@ const AddQuestContent = (isDarkmode, onClose) => {
       }}
     >
       <View style={{ width: "90%", marginBottom: 10 }}>
-        <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
+        <Text
+          style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+        >
           Quest Title
         </Text>
       </View>
@@ -123,7 +125,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
             borderWidth: 1,
             borderColor: isDarkmode ? "white" : "black",
             borderRadius: 10,
-            color: isDarkmode ? "#404040" : "black",
+            color: isDarkmode ? colors.textDark : colors.textLight,
             backgroundColor: isDarkmode ? "black" : "white",
           },
         ]}
@@ -141,12 +143,16 @@ const AddQuestContent = (isDarkmode, onClose) => {
         }}
       >
         <View style={{ width: "48%" }}>
-          <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
+          <Text
+            style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+          >
             Quest Type
           </Text>
         </View>
         <View style={{ width: "48%" }}>
-          <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
+          <Text
+            style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+          >
             Difficulty
           </Text>
         </View>
@@ -253,7 +259,9 @@ const AddQuestContent = (isDarkmode, onClose) => {
           justifyContent: "space-between",
         }}
       >
-        <Text style={{ color: isDarkmode ? "#404040" : "black" }}>
+        <Text
+          style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
+        >
           Due Date & Time
         </Text>
       </View>
@@ -357,7 +365,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
             borderWidth: 1,
             borderColor: isDarkmode ? "white" : "black",
             borderRadius: 10,
-            color: isDarkmode ? "#404040" : "black",
+            color: isDarkmode ? colors.textDark : colors.textLight,
             backgroundColor: isDarkmode ? "black" : "white",
           },
         ]}
