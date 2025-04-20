@@ -236,7 +236,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
           style={{
             width: "100%",
             borderWidth: 1,
-            borderColor: "white",
+            borderColor: isDarkmode ? "white" : "black",
             justifyContent: "center",
             borderRadius: 10,
             height: 40,

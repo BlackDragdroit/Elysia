@@ -8,6 +8,7 @@ import { styles, colors } from "@/assets/styles/common";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
 import renderIcon from "@/assets/styles/renderIcon";
 import Box from "@/components/UI/Box";
+import { AddQuest } from "@/components/UI/AddQuest";
 
 const Quests = () => {
   let params = useSearchParams();
@@ -17,6 +18,8 @@ const Quests = () => {
   const isDarkmode = theme === "dark" ? true : false;
 
   const textColor = isDarkmode ? colors.textDark : colors.textLight;
+
+  const [newQuestUI, setNewQuestUI] = useState(false);
 
   return (
     <LinearGradient
@@ -29,6 +32,7 @@ const Quests = () => {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
+      {newQuestUI ? <AddQuest onClose={setNewQuestUI} /> : ""}
       <FadeIn speed={300}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View
@@ -51,9 +55,9 @@ const Quests = () => {
               >
                 All Quests
               </Text>
-              <View>
+              <Pressable onPress={setNewQuestUI}>
                 <NewQuestButton />
-              </View>
+              </Pressable>
             </View>
           </View>
           {taskMapper(
