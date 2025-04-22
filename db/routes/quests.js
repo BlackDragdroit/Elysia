@@ -1,5 +1,5 @@
 const express = require("express");
-const Task = require("../models/Task");
+const Quest = require("../models/Quest");
 
 const router = express.Router();
 
@@ -7,8 +7,8 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { userId, title } = req.body;
-    const task = await Task.create({ userId, title });
-    res.status(201).json(task);
+    const quest = await Quest.create({ userId, title });
+    res.status(201).json(quest);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
 // Get all tasks for a user
 router.get("/:userId", async (req, res) => {
   try {
-    const tasks = await Task.find({ userId: req.params.userId });
+    const tasks = await Quest.find({ userId: req.params.userId });
     res.json(tasks);
     console.log(tasks);
   } catch (err) {

@@ -60,7 +60,7 @@ export default function Home() {
               Today's Quests
             </Text>
             <Pressable onPress={setNewQuestUI}>
-              <Text style={styles.subTitleText}>+ New Task</Text>
+              <Text style={styles.subTitleText}>+ New Quest</Text>
             </Pressable>
           </View>
 
