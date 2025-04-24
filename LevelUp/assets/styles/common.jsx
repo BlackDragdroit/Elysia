@@ -47,10 +47,8 @@ export const styles = StyleSheet.create({
     // fontSize: 38,
     // // marginTop: 20,
     // fontFamily: titleFont,
-    color: "white",
     fontSize: 24,
     fontFamily: titleFont,
-    color: "white",
     textAlign: "center",
   },
   subTitle: {
