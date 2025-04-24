@@ -1,12 +1,12 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import renderIcon from "@/assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
 import { MotiView } from "moti";
-const AccountButton = ({ size = 48, animated = false }) => {
+const AccountButton = ({ size = 48, animated = false, onPress = () => {} }) => {
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
@@ -44,14 +44,14 @@ const AccountButton = ({ size = 48, animated = false }) => {
     >
       {animated ? (
         <MotiView
-          // from={{ translateY: 0 }}
-          // animate={{ translateY: 6 }}
-          // transition={{
-          //   loop: true,
-          //   type: "timing",
-          //   duration: 800,
-          //   delay: 50,
-          // }}
+          from={{ translateY: 0 }}
+          animate={{ translateY: 6 }}
+          transition={{
+            loop: true,
+            type: "timing",
+            duration: 1200,
+            delay: 50,
+          }}
           style={{
             position: "absolute",
             bottom: -2,

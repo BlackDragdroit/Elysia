@@ -1,4 +1,4 @@
-import { Redirect, Slot } from "expo-router";
+import { Redirect, router, Slot } from "expo-router";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import {
@@ -28,19 +28,6 @@ const StartPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      await auth().createUserWithEmailAndPassword(email, password);
-      console.log("Creating User...");
-    } catch (e) {
-      const err = e;
-      console.log("Registration failed: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const signIn = async () => {
     setLoading(true);
     try {
@@ -62,7 +49,6 @@ const StartPage = () => {
         password={password}
         setPassword={setPassword}
         signIn={signIn}
-        signUp={signUp}
         loading={loading}
         setLoading={setLoading}
       ></LoginSignup>
@@ -76,9 +62,7 @@ const LoginSignup = ({
   password,
   setPassword,
   signIn,
-  signUp,
   loading,
-  setLoading,
 }) => {
   const { theme } = useContext(ThemeContext);
 
@@ -216,7 +200,7 @@ const LoginSignup = ({
                   height: 40,
                   backgroundColor: isDarkmode ? "black" : "white",
                 }}
-                onPress={signUp}
+                onPress={() => router.replace("/SignUp")}
               >
                 <Text
                   style={{

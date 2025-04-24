@@ -19,8 +19,10 @@ import { Achievement } from "@/components/UI/Achievement";
 import AccountButton from "@/components/UI/AccountButton";
 import TitleBadge from "@/components/UI/TitleBadge";
 import { LevelBar } from "../../components/UI/LevelBar";
+import auth from "@react-native-firebase/auth";
 
 const Profile = () => {
+  const user = auth().currentUser;
   const { theme } = useContext(ThemeContext);
   const isDarkmode = theme === "dark" ? true : false;
 
@@ -67,11 +69,13 @@ const Profile = () => {
               <Box style={{ flexDirection: "column" }}>
                 <AccountButton size={80} animated={true} />
                 <Text
-                  style={[styles.subTitle, { marginTop: 20, color: textColor }]}
+                  style={[
+                    styles.subTitle,
+                    { marginTop: 20, color: textColor, marginBottom: 20 },
+                  ]}
                 >
-                  Alex Johncina
+                  @{user.displayName}
                 </Text>
-                <Text style={{ color: textColor }}>@{"demo"}</Text>
                 <View
                   style={{
                     justifyContent: "center",
@@ -150,7 +154,8 @@ const Profile = () => {
               {achievementMapper(
                 textColor,
                 isDarkmode ? "#27272a" : "#f5f5f4",
-                isDarkmode ? "black" : "white"
+                isDarkmode ? "black" : "white",
+                user
               )}
             </View>
           </View>
@@ -160,7 +165,7 @@ const Profile = () => {
   );
 };
 
-const achievementMapper = (textColor, back1, back2) => {
+const achievementMapper = (textColor, back1, back2, user) => {
   const [sel, setSel] = useState(0);
 
   return (
@@ -224,19 +229,21 @@ const achievementMapper = (textColor, back1, back2) => {
               borderWidth: 1,
               borderColor: "black",
               width: "90%",
+              height: 40,
               textAlign: "center",
               backgroundColor: back1,
               borderRadius: 10,
               color: textColor,
             }}
           >
-            Username
+            {user.email}
           </TextInput>
           <TextInput
             style={{
               borderWidth: 1,
               borderColor: "black",
               width: "90%",
+              height: 40,
               textAlign: "center",
               backgroundColor: back1,
               borderRadius: 10,
@@ -244,12 +251,12 @@ const achievementMapper = (textColor, back1, back2) => {
             }}
             secureTextEntry={true}
           >
-            Password
+            Test21312312312
           </TextInput>
           <Button
-            title="Save"
-            disabled={true}
-            accessibilityLabel="Save your credentials"
+            title="Log out"
+            accessibilityLabel="Logout"
+            onPress={() => auth().signOut()}
           />
           <Text
             style={{ textAlign: "center", color: "gray", fontStyle: "italic" }}
