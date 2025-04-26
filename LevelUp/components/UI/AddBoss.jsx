@@ -107,7 +107,6 @@ const AddQuestContent = (isDarkmode, onClose) => {
   const removeStep = (id) => {
     setSteps((prevSteps) => {
       if (prevSteps.length > 2) {
-        console.log(prevSteps);
         return prevSteps.filter((step) => step.id !== id);
       }
       return prevSteps;
@@ -148,6 +147,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
               borderRadius: 10,
               color: isDarkmode ? colors.textDark : colors.textLight,
               backgroundColor: isDarkmode ? "black" : "white",
+              padding: 5,
             },
           ]}
           placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
@@ -196,6 +196,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
                 backgroundColor: isDarkmode ? "black" : "white",
                 textAlign: "left",
                 textAlignVertical: "top",
+                padding: 5,
               },
             ]}
             placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
@@ -401,6 +402,11 @@ const Step = ({ id, text, isDarkmode, onRemove, onUpdateText }) => {
             textAlign: "left",
             textAlignVertical: "top",
             flexShrink: 0,
+            alignItems: "center",
+            alignContent: "center",
+            alignSelf: "center",
+            padding: 5,
+            paddingTop: 10,
           },
         ]}
         placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}

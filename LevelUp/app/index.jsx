@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ThemeContext,
   ThemeProvider,
@@ -21,12 +21,53 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import logo from "@/assets/images/Logo(Purple).png";
+import googleLogo from "@/assets/images/Google__G__logo.png";
 import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { useFonts } from "expo-font";
 
 const StartPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [fontsLoaded] = useFonts({
+    "Audiowide-Regular": require("@/assets/fonts/Audiowide-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "596212355234-d9kogjf063trja4kntrdm8oivnm9les3.apps.googleusercontent.com",
+    });
+  }, []);
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size={"small"} />;
+  }
+
+  async function onGoogleButtonPress() {
+    setLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      const userInfo = await GoogleSignin.signIn();
+      console.log("Google user info:", userInfo);
+      const idToken = userInfo.data.idToken;
+      console.log(idToken);
+      if (!idToken) {
+        console.log("No idToken returned from Google Sign-In!");
+        return;
+      }
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+    } catch (e) {
+      console.log("Google sign-in error:", e);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const signIn = async () => {
     setLoading(true);
@@ -51,6 +92,7 @@ const StartPage = () => {
         signIn={signIn}
         loading={loading}
         setLoading={setLoading}
+        onGoogleButtonPress={onGoogleButtonPress}
       ></LoginSignup>
     </ThemeProvider>
   );
@@ -63,6 +105,7 @@ const LoginSignup = ({
   setPassword,
   signIn,
   loading,
+  onGoogleButtonPress,
 }) => {
   const { theme } = useContext(ThemeContext);
 
@@ -123,9 +166,9 @@ const LoginSignup = ({
                 height: 40,
                 borderWidth: 1,
                 borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 5,
+                borderRadius: 10,
                 color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
                 textAlign: "center",
               },
             ]}
@@ -142,9 +185,9 @@ const LoginSignup = ({
                 height: 40,
                 borderWidth: 1,
                 borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 5,
+                borderRadius: 10,
                 color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
                 textAlign: "center",
               },
             ]}
@@ -161,56 +204,95 @@ const LoginSignup = ({
             <View
               style={{
                 width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
+                flexDirection: "column",
                 gap: 10,
-                flexDirection: "row",
-                marginTop: 50,
               }}
             >
-              <Pressable
+              <View
                 style={{
-                  width: "20%",
-                  borderWidth: 1,
-                  borderColor: isDarkmode ? "white" : "black",
-                  borderRadius: 5,
+                  width: "100%",
                   justifyContent: "center",
-                  height: 40,
-                  backgroundColor: isDarkmode ? "black" : "white",
+                  alignItems: "center",
+                  gap: 20,
+                  flexDirection: "row",
+                  marginTop: 30,
                 }}
-                onPress={signIn}
               >
-                <Text
+                <Pressable
                   style={{
-                    textAlign: "center",
-                    color: isDarkmode ? colors.textDark : colors.textLight,
+                    height: 40,
+                    width: "20%",
+                    borderWidth: 1,
+                    borderColor: isDarkmode ? "white" : "black",
+                    borderRadius: 10,
+                    justifyContent: "center",
+                    // backgroundColor: isDarkmode
+                    //   ? colors.gradientDark1
+                    //   : "white",
                   }}
+                  onPress={signIn}
                 >
-                  Sign In
-                </Text>
-              </Pressable>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: isDarkmode ? colors.textDark : colors.textLight,
+                    }}
+                  >
+                    Sign In
+                  </Text>
+                </Pressable>
 
-              <Pressable
-                style={{
-                  width: "20%",
-                  borderWidth: 1,
-                  borderColor: isDarkmode ? "white" : "black",
-                  borderRadius: 5,
-                  justifyContent: "center",
-                  height: 40,
-                  backgroundColor: isDarkmode ? "black" : "white",
-                }}
-                onPress={() => router.replace("/SignUp")}
-              >
-                <Text
+                <Pressable
                   style={{
-                    textAlign: "center",
-                    color: isDarkmode ? colors.textDark : colors.textLight,
+                    height: 40,
+                    width: "20%",
+                    borderWidth: 1,
+                    borderColor: isDarkmode ? "white" : "black",
+                    borderRadius: 10,
+                    justifyContent: "center",
+
+                    // backgroundColor: isDarkmode
+                    //   ? colors.gradientDark1
+                    //   : "white",
                   }}
+                  onPress={() => router.replace("/SignUp")}
                 >
-                  Sign Up
-                </Text>
-              </Pressable>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: isDarkmode ? colors.textDark : colors.textLight,
+                    }}
+                  >
+                    Sign Up
+                  </Text>
+                </Pressable>
+              </View>
+              <Text
+                style={{
+                  alignItems: "center",
+                  textAlign: "center",
+                  fontSize: 20,
+                  fontFamily: "Audiowide-Regular",
+                  color: isDarkmode ? colors.textDark : colors.textLight,
+                }}
+              >
+                OR
+              </Text>
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Pressable onPress={onGoogleButtonPress}>
+                  <Image
+                    style={{ width: 40, height: 40 }}
+                    source={googleLogo}
+                  />
+                </Pressable>
+              </View>
             </View>
           )}
         </KeyboardAvoidingView>

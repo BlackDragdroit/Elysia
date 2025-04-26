@@ -69,12 +69,12 @@ const Profile = () => {
               <Box style={{ flexDirection: "column" }}>
                 <AccountButton size={80} animated={true} />
                 <Text
-                  style={[
-                    styles.subTitle,
-                    { marginTop: 20, color: textColor, marginBottom: 20 },
-                  ]}
+                  style={[styles.subTitle, { marginTop: 20, color: textColor }]}
                 >
-                  @{user.displayName}
+                  {user.displayName}
+                </Text>
+                <Text style={[{ color: textColor, marginBottom: 10 }]}>
+                  @{user.displayName.toLowerCase().replace(" ", "")}
                 </Text>
                 <View
                   style={{
@@ -253,11 +253,9 @@ const achievementMapper = (textColor, back1, back2, user) => {
           >
             Test21312312312
           </TextInput>
-          <Button
-            title="Log out"
-            accessibilityLabel="Logout"
-            onPress={() => auth().signOut()}
-          />
+          <Pressable onPress={() => auth().signOut()}>
+            <Text style={{ color: textColor }}>Log out</Text>
+          </Pressable>
           <Text
             style={{ textAlign: "center", color: "gray", fontStyle: "italic" }}
           >

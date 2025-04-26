@@ -1,4 +1,4 @@
-import { Redirect, Slot } from "expo-router";
+import { Redirect, router, Slot } from "expo-router";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import {
@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ThemeContext,
   ThemeProvider,
@@ -23,11 +23,15 @@ import {
 import logo from "@/assets/images/Logo(Purple).png";
 import auth from "@react-native-firebase/auth";
 import { useFonts } from "expo-font";
+import Message from "@/components/UI/Message";
 
 const SignUp = () => {
-  const [username, setUsername] = useState("");
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
   const [passwordVerification, setPasswordVerification] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -42,25 +46,29 @@ const SignUp = () => {
         email,
         password
       );
-      userCred.user.updateProfile({ displayName: username });
+      userCred.user.updateProfile({ displayName: first + " " + last });
       console.log("Creating User...");
     } catch (e) {
       const err = e;
-      console.log("Registration failed: " + err.message);
+      console.log("Registration failed: " + err);
+      setError(true);
+      setMessage("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size={small} />;
+    return <ActivityIndicator size={"small"} />;
   }
 
   return (
     <ThemeProvider>
       <Content
-        username={username}
-        setUsername={setUsername}
+        first={first}
+        setFirst={setFirst}
+        last={last}
+        setLast={setLast}
         email={email}
         setEmail={setEmail}
         password={password}
@@ -69,14 +77,20 @@ const SignUp = () => {
         setPasswordVerification={setPasswordVerification}
         signUp={signUp}
         loading={loading}
+        message={message}
+        setMessage={setMessage}
+        error={error}
+        setError={setError}
       ></Content>
     </ThemeProvider>
   );
 };
 
 const Content = ({
-  username,
-  setUsername,
+  first,
+  setFirst,
+  last,
+  setLast,
   email,
   setEmail,
   password,
@@ -85,6 +99,10 @@ const Content = ({
   setPasswordVerification,
   signUp,
   loading,
+  message,
+  setMessage,
+  error,
+  setError,
 }) => {
   const { theme } = useContext(ThemeContext);
 
@@ -102,6 +120,7 @@ const Content = ({
         end={{ x: 1, y: 1 }}
         style={{ flex: 1 }}
       >
+        {message != "" && <Message isError={error} message={message} />}
         <KeyboardAvoidingView
           behavior="padding"
           style={{
@@ -145,16 +164,16 @@ const Content = ({
                 height: 40,
                 borderWidth: 1,
                 borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 5,
+                borderRadius: 10,
                 color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
                 textAlign: "center",
               },
             ]}
-            value={username}
-            onChangeText={setUsername}
+            value={first}
+            onChangeText={setFirst}
             placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Username"
+            placeholder="Firstname"
           />
           <TextInput
             style={[
@@ -163,9 +182,27 @@ const Content = ({
                 height: 40,
                 borderWidth: 1,
                 borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 5,
+                borderRadius: 10,
                 color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
+                textAlign: "center",
+              },
+            ]}
+            value={last}
+            onChangeText={setLast}
+            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+            placeholder="Lastname"
+          />
+          <TextInput
+            style={[
+              {
+                width: "90%",
+                height: 40,
+                borderWidth: 1,
+                borderColor: isDarkmode ? "white" : "black",
+                borderRadius: 10,
+                color: isDarkmode ? colors.textDark : colors.textLight,
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
                 textAlign: "center",
               },
             ]}
@@ -182,9 +219,9 @@ const Content = ({
                 height: 40,
                 borderWidth: 1,
                 borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 5,
+                borderRadius: 10,
                 color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
                 textAlign: "center",
               },
             ]}
@@ -202,9 +239,9 @@ const Content = ({
                 height: 40,
                 borderWidth: 1,
                 borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 5,
+                borderRadius: 10,
                 color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
+                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
                 textAlign: "center",
               },
             ]}
@@ -230,17 +267,54 @@ const Content = ({
             >
               <Pressable
                 style={{
+                  height: 40,
                   width: "20%",
                   borderWidth: 1,
                   borderColor: isDarkmode ? "white" : "black",
-                  borderRadius: 5,
+                  borderRadius: 10,
                   justifyContent: "center",
-                  height: 40,
-                  backgroundColor: isDarkmode ? "black" : "white",
+                  // backgroundColor: isDarkmode
+                  //   ? colors.gradientDark1
+                  //   : "white",
                 }}
                 onPress={() => {
-                  if (password != passwordVerification) {
-                    console.log("Passwords do not match!");
+                  router.replace("/");
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: isDarkmode ? colors.textDark : colors.textLight,
+                  }}
+                >
+                  Back
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  height: 40,
+                  width: "20%",
+                  borderWidth: 1,
+                  borderColor: isDarkmode ? "white" : "black",
+                  borderRadius: 10,
+                  justifyContent: "center",
+                  // backgroundColor: isDarkmode
+                  //   ? colors.gradientDark1
+                  //   : "white",
+                }}
+                onPress={() => {
+                  if (
+                    first == "" ||
+                    last == "" ||
+                    email == "" ||
+                    password == "" ||
+                    passwordVerification == ""
+                  ) {
+                    setError(true);
+                    setMessage("No field can remain blank");
+                  } else if (password != passwordVerification) {
+                    setError(true);
+                    setMessage("Passwords must match");
                   } else {
                     signUp();
                   }

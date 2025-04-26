@@ -19,6 +19,7 @@ export const colors = {
   border: "#FFFFFF",
   purple: "#6b57ea",
   pink: "#a855f7",
+  errorRed: "#820415",
 };
 
 export const styles = StyleSheet.create({

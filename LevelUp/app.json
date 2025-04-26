@@ -32,7 +32,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/Logo(Purple).png",
-          "imageWidth": 200,
+          "imageWidth": 100,
           "resizeMode": "contain",
           "backgroundColor": "black"
         }
