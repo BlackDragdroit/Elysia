@@ -87,6 +87,8 @@ export const AddBoss = ({ onClose }) => {
 const AddQuestContent = (isDarkmode, onClose) => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [padding, setPadding] = useState(50);
+  const paddingAdjust = 5;
 
   const [steps, setSteps] = useState([
     { id: Date.now(), text: "" },
@@ -102,11 +104,13 @@ const AddQuestContent = (isDarkmode, onClose) => {
 
   const addStep = () => {
     setSteps((prevSteps) => [...prevSteps, { id: Date.now(), text: "" }]);
+    setPadding(padding + paddingAdjust);
   };
 
   const removeStep = (id) => {
     setSteps((prevSteps) => {
       if (prevSteps.length > 2) {
+        setPadding(padding - paddingAdjust);
         return prevSteps.filter((step) => step.id !== id);
       }
       return prevSteps;
@@ -125,7 +129,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
         width: "100%",
         alignItems: "center",
         flexDirection: "column",
-        paddingBottom: 50,
+        paddingBottom: padding,
       }}
     >
       <View style={{ width: "90%" }}>
@@ -350,7 +354,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
                 textAlign: "center",
               }}
             >
-              Create Quest
+              Create Boss
             </Text>
           </Pressable>
         </View>
