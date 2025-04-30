@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Button,
   Pressable,
   ScrollView,
@@ -8,7 +9,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
 import { styles, colors } from "@/assets/styles/common";
@@ -40,7 +41,7 @@ const Profile = () => {
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-        <FadeIn speed={300}>
+        <FadeIn speed={100}>
           <View
             style={{
               justifyContent: "center",
@@ -151,12 +152,12 @@ const Profile = () => {
                 </Text>
                 <Text style={[styles.subTitle, { color: textColor }]}>7</Text>
               </Box>
-              {achievementMapper(
-                textColor,
-                isDarkmode ? "#27272a" : "#f5f5f4",
-                isDarkmode ? "black" : "white",
-                user
-              )}
+              <AchievementMapper
+                textColor={textColor}
+                back1={isDarkmode ? "#27272a" : "#f5f5f4"}
+                back2={isDarkmode ? "black" : "white"}
+                user={user}
+              />
             </View>
           </View>
         </FadeIn>
@@ -165,8 +166,73 @@ const Profile = () => {
   );
 };
 
-const achievementMapper = (textColor, back1, back2, user) => {
+const AchievementMapper = ({ textColor, back1, back2, user }) => {
   const [sel, setSel] = useState(0);
+  const [achievements, setAchievements] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (sel === 0) {
+      setLoading(true);
+
+      setTimeout(() => {
+        setAchievements([
+          { title: "Chef in Training", descr: "yooo", icon: "chef-hat" },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+          {
+            title: "The Rizzler",
+            descr: "Meet with at least 10 girls",
+            icon: "key",
+          },
+        ]);
+        setLoading(false);
+      }, 0);
+    }
+  }, [sel]);
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
@@ -209,17 +275,18 @@ const achievementMapper = (textColor, back1, back2, user) => {
       </View>
       {sel == 0 && (
         <Box>
-          <Achievement title="Chef in Training" descr="yooo" icon="chef-hat" />
-          <Achievement
-            title="The Rizzler"
-            descr="Meet with at least 10 girls"
-            icon="key"
-          />
-          <Achievement title="Chef in Training" descr="yooo" icon="chef-hat" />
-          <Achievement title="Chef in Training" descr="yooo" icon="chef-hat" />
-          <Achievement title="Chef in Training" descr="yooo" icon="chef-hat" />
-          <Achievement title="Chef in Training" descr="yooo" icon="chef-hat" />
-          <Achievement title="Chef in Training" descr="yooo" icon="chef-hat" />
+          {loading ? (
+            <ActivityIndicator size={"small"} />
+          ) : (
+            achievements.map((a, i) => (
+              <Achievement
+                key={i}
+                title={a.title}
+                descr={a.descr}
+                icon={a.icon}
+              />
+            ))
+          )}
         </Box>
       )}
       {sel == 1 && (

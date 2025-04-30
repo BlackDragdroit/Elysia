@@ -28,7 +28,7 @@ const Bosses = () => {
       style={{ flex: 1 }}
     >
       {newBossUI ? <AddBoss onClose={setNewBossUI} /> : ""}
-      <FadeIn speed={300}>
+      <FadeIn speed={100}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View
             style={{

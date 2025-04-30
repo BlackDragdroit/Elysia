@@ -30,7 +30,7 @@ const FirstQuestPage = () => {
     }).start();
   };
   return (
-    <FadeIn speed={300}>
+    <FadeIn speed={100}>
       <View style={styles.container}>
         <StatusBar translucent />
         <Animated.View style={{ transform: [{ scale: scaleValue }] }}>

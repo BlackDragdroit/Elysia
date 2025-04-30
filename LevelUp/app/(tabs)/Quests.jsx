@@ -33,7 +33,7 @@ const Quests = () => {
       style={{ flex: 1 }}
     >
       {newQuestUI ? <AddQuest onClose={setNewQuestUI} /> : ""}
-      <FadeIn speed={300}>
+      <FadeIn speed={100}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View
             style={{

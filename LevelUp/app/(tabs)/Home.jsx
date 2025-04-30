@@ -7,7 +7,6 @@ import {
   Pressable,
   ScrollView,
 } from "react-native";
-import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
@@ -20,13 +19,6 @@ import { AddBoss } from "@/components/UI/AddBoss";
 
 let font = "Roboto-Variable";
 export default function Home() {
-  useFonts({
-    "Audiowide-Regular": require("@/assets/fonts/Audiowide-Regular.ttf"),
-    SpaceGrotesk: require("@/assets/fonts/SpaceGrotesk.ttf"),
-    "Roboto-Italic": require("@/assets/fonts/Roboto-Italic.ttf"),
-    "Roboto-Variable": require("@/assets/fonts/Roboto-Variable.ttf"),
-  });
-
   // let showHome = true;
 
   const navigation = useNavigation();
@@ -53,7 +45,7 @@ export default function Home() {
     >
       {newQuestUI ? <AddQuest onClose={setNewQuestUI} /> : ""}
       {newBossUI ? <AddBoss onClose={setNewBossUI} /> : ""}
-      <FadeIn speed={300}>
+      <FadeIn speed={100}>
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View style={styles.subTitleView}>
             <Text style={[styles.subTitle, { color: textColor }]}>

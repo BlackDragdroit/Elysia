@@ -22,7 +22,6 @@ import {
 } from "react-native-gesture-handler";
 import logo from "@/assets/images/Logo(Purple).png";
 import auth from "@react-native-firebase/auth";
-import { useFonts } from "expo-font";
 import Message from "@/components/UI/Message";
 
 const SignUp = () => {
@@ -34,10 +33,6 @@ const SignUp = () => {
   const [error, setError] = useState(false);
   const [passwordVerification, setPasswordVerification] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [fontsLoaded] = useFonts({
-    "Audiowide-Regular": require("@/assets/fonts/Audiowide-Regular.ttf"),
-  });
 
   const signUp = async () => {
     setLoading(true);
@@ -57,10 +52,6 @@ const SignUp = () => {
       setLoading(false);
     }
   };
-
-  if (!fontsLoaded) {
-    return <ActivityIndicator size={"small"} />;
-  }
 
   return (
     <ThemeProvider>

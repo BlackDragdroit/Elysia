@@ -1,11 +1,19 @@
 import React, { createContext, useState, useEffect } from "react";
 import { Appearance } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts } from "expo-font";
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(Appearance.getColorScheme()); // Default to system theme
+
+  const [fontsLoaded] = useFonts({
+    "Audiowide-Regular": require("@/assets/fonts/Audiowide-Regular.ttf"),
+    SpaceGrotesk: require("@/assets/fonts/SpaceGrotesk.ttf"),
+    "Roboto-Italic": require("@/assets/fonts/Roboto-Italic.ttf"),
+    "Roboto-Variable": require("@/assets/fonts/Roboto-Variable.ttf"),
+  });
 
   // Load saved theme from AsyncStorage on app start
   useEffect(() => {

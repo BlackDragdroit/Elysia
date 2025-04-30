@@ -24,16 +24,11 @@ import logo from "@/assets/images/Logo(Purple).png";
 import googleLogo from "@/assets/images/Google__G__logo.png";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { useFonts } from "expo-font";
 
 const StartPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [fontsLoaded] = useFonts({
-    "Audiowide-Regular": require("@/assets/fonts/Audiowide-Regular.ttf"),
-  });
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -41,10 +36,6 @@ const StartPage = () => {
         "596212355234-d9kogjf063trja4kntrdm8oivnm9les3.apps.googleusercontent.com",
     });
   }, []);
-
-  if (!fontsLoaded) {
-    return <ActivityIndicator size={"small"} />;
-  }
 
   async function onGoogleButtonPress() {
     setLoading(true);
