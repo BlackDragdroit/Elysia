@@ -1,13 +1,14 @@
 const express = require("express");
-const User = require("../models/User");
+const Boss = require("../models/Boss");
+
 const router = express.Router();
 
 // Create a task
 router.post("/", async (req, res) => {
   try {
-    const { username, email } = req.body;
-    const user = await User.create({ username, email });
-    res.status(201).json(user);
+    const { userId, title, rewardId } = req.body;
+    const boss = await Boss.create({ userId, title, rewardId });
+    res.status(201).json(boss);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -16,8 +17,11 @@ router.post("/", async (req, res) => {
 // Get all tasks for a user
 router.get("/:userId", async (req, res) => {
   try {
-    const user = await User.find({ _id: req.params.userId });
-    res.json(user);
+    const bosses = await Boss.find({ userId: req.params.userId });
+    res.json(bosses);
+    console.log(
+      `Fetched ${bosses.length} bosses for user ${req.params.userId}`
+    );
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

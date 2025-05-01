@@ -12,7 +12,7 @@ const Schema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    reward: {
+    rewardId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Item",
     },
