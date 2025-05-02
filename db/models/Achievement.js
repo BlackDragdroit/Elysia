@@ -17,7 +17,7 @@ const Schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  reward: {
+  rewardId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Item",
   },

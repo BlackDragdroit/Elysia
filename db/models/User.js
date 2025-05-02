@@ -2,14 +2,17 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    firebaseId: {
       type: String,
       required: true,
     },
-    email: String,
-    password: {
+    selectedCharacterIcon: {
       type: String,
-      required: true,
+      default: "person-standing",
+    },
+    totalXP: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import renderIcon from "@/assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
 import { MotiView } from "moti";
+import auth from "@react-native-firebase/auth";
 const AccountButton = ({ size = 48, animated = false, onPress = () => {} }) => {
   const { theme } = useContext(ThemeContext);
 

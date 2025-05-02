@@ -2,7 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const achievementRoutes = require("./routes/achievements");
+const bossRoutes = require("./routes/bosses");
+const difficultyRoutes = require("./routes/difficulties");
+const itemRoutes = require("./routes/items");
 const questRoutes = require("./routes/quests");
+const userRoutes = require("./routes/users");
 
 dotenv.config();
 
@@ -10,6 +15,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use("/api/achievements", achievementRoutes);
+app.use("/api/bosses", bossRoutes);
+app.use("/api/difficulties", difficultyRoutes);
+app.use("/api/items", itemRoutes);
 app.use("/api/quests", questRoutes);
 app.use("/api/users", userRoutes);
 

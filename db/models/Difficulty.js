@@ -9,7 +9,7 @@ const Schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  reward: {
+  rewardID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Item",
   },
