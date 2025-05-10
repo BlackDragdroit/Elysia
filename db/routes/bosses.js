@@ -4,7 +4,7 @@ const Step = require("../models/Step");
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/createBoss", async (req, res) => {
   try {
     const { userId, title, rewardId } = req.body;
     const boss = await Boss.create({ userId, title, rewardId });
@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
+router.get("/getBossesFromId/:userId", async (req, res) => {
   try {
     const bosses = await Boss.find({ userId: req.params.userId });
     res.status(200).json(bosses);

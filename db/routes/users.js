@@ -12,9 +12,9 @@ router.post("/createUser/:firebaseId", async (req, res) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
+router.get("/getUser/:firebaseId", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findOne({ firebaseId: req.params.firebaseId });
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });

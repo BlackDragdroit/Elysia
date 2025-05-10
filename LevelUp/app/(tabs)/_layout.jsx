@@ -8,13 +8,16 @@ import {
   ThemeProvider,
   ThemeContext,
 } from "@/components/Contexts/ThemeProvider";
+import { UserInfoProvider } from "@/components/Contexts/UserInfoProvider";
 import { font, colors } from "@/assets/styles/common";
 
 export default function TabsLayout() {
   return (
-    <ThemeProvider>
-      <ThemedTabs />
-    </ThemeProvider>
+    <UserInfoProvider>
+      <ThemeProvider>
+        <ThemedTabs />
+      </ThemeProvider>
+    </UserInfoProvider>
   );
 }
 

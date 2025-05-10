@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { UserInfoContext } from "@/components/Contexts/UserInfoProvider";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
 import { styles, colors } from "@/assets/styles/common";
 import Box from "@/components/UI/Box";
@@ -24,6 +25,7 @@ export default function Home() {
   const navigation = useNavigation();
 
   const { theme } = useContext(ThemeContext);
+  const userInfo = useContext(UserInfoContext);
 
   const isDarkmode = theme === "dark" ? true : false;
 
