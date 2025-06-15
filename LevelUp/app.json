@@ -2,9 +2,9 @@
   "expo": {
     "name": "Elysia",
     "slug": "Elysia",
-    "version": "1.0.0",
+    "version": "0.5.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Logo(Purple).png",
+    "icon": "./assets/images/LogoTry.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Logo(Purple).png",
+        "foregroundImage": "./assets/images/LogoTry.png",
         "backgroundColor": "#000000"
       },
       "package": "at.glaucus.elysia",
@@ -31,7 +31,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/Logo(Purple).png",
+          "image": "./assets/images/LogoTry.png",
           "imageWidth": 100,
           "resizeMode": "contain",
           "backgroundColor": "black"
