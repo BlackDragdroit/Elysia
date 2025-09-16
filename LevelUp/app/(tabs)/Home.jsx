@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  Text,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { UserInfoContext } from "@/components/Contexts/UserInfoProvider";
@@ -18,7 +11,6 @@ import { useNavigation } from "expo-router";
 import { AddQuest } from "@/components/UI/AddQuest";
 import { AddBoss } from "@/components/UI/AddBoss";
 
-let font = "Roboto-Variable";
 export default function Home() {
   // let showHome = true;
 

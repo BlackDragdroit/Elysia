@@ -1,4 +1,9 @@
-TODO: Deadline for Steps in Boss Battles
-	  Tracking of Time needed for Quests etc.
+TODO: 
+	Deadline for Steps in Boss Battles
+	Tracking of Time needed for Quests etc.
 
-Ideas: Mascot! 
+Ideas: 
+	Mascot!
+	Full Customizability:
+		Color Scheme
+		Fonts 
