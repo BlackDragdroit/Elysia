@@ -1,42 +1,45 @@
 import renderIcon from "../../assets/styles/renderIcon";
 import { Tabs } from "expo-router";
-import { useContext } from "react";
 import { Pressable, View } from "react-native";
 import Header from "../../components/UI/Header";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { OutcomeToast } from "@/components/Contexts/DataProvider";
-import { font, colors } from "@/assets/styles/common";
+import { useTheme } from "@/assets/styles/theme";
 import { StatusBar } from "expo-status-bar";
 
 export default function TabsLayout() {
   return <ThemedTabs />;
 }
 
+const tabButton = (label) => (props) => (
+  <Pressable {...props} android_ripple={{ color: "transparent" }} accessibilityLabel={label} />
+);
+
 function ThemedTabs() {
-  const { theme } = useContext(ThemeContext);
-  const isDarkmode = theme === "dark";
+  const { isDark, c } = useTheme();
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDarkmode ? "#0f0f12" : "#f4f4f6" }}>
-      <StatusBar style={isDarkmode ? "light" : "dark"} />
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
+      <StatusBar style={isDark ? "light" : "dark"} />
       <Header />
       <OutcomeToast />
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: isDarkmode ? "#18181c" : "#ffffff",
+            backgroundColor: c.surface,
             borderTopWidth: 1,
-            borderTopColor: isDarkmode ? "#2a2a31" : "#e4e4e7",
+            borderTopColor: c.border,
             elevation: 0,
             shadowOpacity: 0,
             shadowColor: "transparent",
           },
-          tabBarActiveTintColor: colors.purple,
-          tabBarInactiveTintColor: isDarkmode ? "#a3a3a3" : "#737373",
+          tabBarActiveTintColor: c.accent,
+          tabBarInactiveTintColor: c.textMuted,
           tabBarLabelStyle: {
-            fontFamily: font,
+            fontFamily: "Roboto-Variable",
+            fontSize: 12,
+            fontWeight: "500",
           },
         }}
       >
@@ -45,57 +48,41 @@ function ThemedTabs() {
           options={{
             tabBarLabel: "Home",
             tabBarIcon: ({ color, size }) => renderIcon("house", color, size),
-            tabBarButton: (props) => (
-              <Pressable {...props} android_ripple={{ color: "transparent" }} />
-            ),
+            tabBarButton: tabButton("Home"),
           }}
-        ></Tabs.Screen>
-
+        />
         <Tabs.Screen
           name="Quests"
           options={{
             tabBarLabel: "Quests",
-            tabBarIcon: ({ color, size }) =>
-              renderIcon("square-check-big", color, size),
-            tabBarButton: (props) => (
-              <Pressable {...props} android_ripple={{ color: "transparent" }} />
-            ),
+            tabBarIcon: ({ color, size }) => renderIcon("square-check-big", color, size),
+            tabBarButton: tabButton("Quests"),
           }}
-        ></Tabs.Screen>
-
+        />
         <Tabs.Screen
           name="NewQuest"
           options={{
             tabBarLabel: "",
-            tabBarIcon: () => <NewQuestButton size={50} />,
-            tabBarButton: (props) => (
-              <Pressable {...props} android_ripple={{ color: "transparent" }} />
-            ),
+            tabBarIcon: () => <NewQuestButton />,
+            tabBarButton: tabButton("New quest"),
           }}
-        ></Tabs.Screen>
-
+        />
         <Tabs.Screen
           name="Bosses"
           options={{
             tabBarLabel: "Bosses",
             tabBarIcon: ({ color, size }) => renderIcon("swords", color, size),
-            tabBarButton: (props) => (
-              <Pressable {...props} android_ripple={{ color: "transparent" }} />
-            ),
+            tabBarButton: tabButton("Bosses"),
           }}
-        ></Tabs.Screen>
-
+        />
         <Tabs.Screen
           name="Profile"
           options={{
             tabBarLabel: "Profile",
-            tabBarIcon: ({ color, size }) =>
-              renderIcon("person-standing", color, size),
-            tabBarButton: (props) => (
-              <Pressable {...props} android_ripple={{ color: "transparent" }} />
-            ),
+            tabBarIcon: ({ color, size }) => renderIcon("person-standing", color, size),
+            tabBarButton: tabButton("Profile"),
           }}
-        ></Tabs.Screen>
+        />
       </Tabs>
     </View>
   );
