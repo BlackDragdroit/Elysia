@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import Animated, { useReducedMotion, runOnJS, useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import renderIcon from "@/assets/styles/renderIcon";
-import { useTheme, type, radius } from "@/assets/styles/theme";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme, type, radius, HEADER_HEIGHT } from "@/assets/styles/theme";
 
 function Message({ isError = false, message = "", duration = 2000 }) {
   const { c } = useTheme();
   const reduced = useReducedMotion();
+  const insets = useSafeAreaInsets();
   const [gone, setGone] = useState(false);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(-8);
@@ -36,7 +38,7 @@ function Message({ isError = false, message = "", duration = 2000 }) {
   return (
     <Animated.View
       style={[anim, {
-        position: "absolute", left: 16, right: 16, top: 8, zIndex: 100,
+        position: "absolute", left: 16, right: 16, top: insets.top + HEADER_HEIGHT + 8, zIndex: 100,
         backgroundColor: isError ? c.dangerSoft : c.surfaceRaised,
         borderRadius: radius.control, padding: 12,
         flexDirection: "row", alignItems: "flex-start",

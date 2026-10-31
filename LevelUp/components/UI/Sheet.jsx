@@ -1,6 +1,8 @@
-import React from "react";
-import { View, Text, Pressable, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, Pressable, KeyboardAvoidingView, Platform, ScrollView, Modal, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { useReducedMotion, useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { useTheme, type, radius } from "@/assets/styles/theme";
 import renderIcon from "@/assets/styles/renderIcon";
 import IconButton from "@/components/UI/IconButton";
@@ -8,20 +10,32 @@ import { formatDueDate } from "@/services/filters";
 
 export function Sheet({ title, onClose, children }) {
   const { c } = useTheme();
+  const insets = useSafeAreaInsets();
+  const reduced = useReducedMotion();
+  const ty = useSharedValue(reduced ? 0 : 40);
+  const op = useSharedValue(reduced ? 1 : 0);
+  useEffect(() => {
+    ty.value = withTiming(0, { duration: 200 });
+    op.value = withTiming(1, { duration: 200 });
+  }, []);
+  const anim = useAnimatedStyle(() => ({ opacity: op.value, transform: [{ translateY: ty.value }] }));
+
   return (
-    <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }} onPress={onClose} accessibilityLabel="Close" />
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
-        <View style={{ backgroundColor: c.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, padding: 20, paddingBottom: 32 }}>
-          <View style={{ alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: c.border, marginBottom: 12 }} />
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <Text style={[type.sectionTitle, { color: c.text }]}>{title}</Text>
-            <IconButton icon="x" accessibilityLabel="Close" onPress={onClose} />
-          </View>
-          <ScrollView style={{ maxHeight: 560 }} keyboardShouldPersistTaps="handled">{children}</ScrollView>
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+    <Modal transparent visible animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
+      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <Pressable style={[StyleSheet.absoluteFillObject, { backgroundColor: "rgba(0,0,0,0.5)" }]} onPress={onClose} accessibilityLabel="Close" accessibilityRole="button" />
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <Animated.View style={[anim, { backgroundColor: c.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, padding: 20, paddingBottom: 20 + insets.bottom, maxHeight: "90%" }]}>
+            <View style={{ alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: c.border, marginBottom: 12 }} />
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <Text style={[type.sectionTitle, { color: c.text }]}>{title}</Text>
+              <IconButton icon="x" accessibilityLabel="Close" onPress={onClose} />
+            </View>
+            <ScrollView keyboardShouldPersistTaps="handled">{children}</ScrollView>
+          </Animated.View>
+        </KeyboardAvoidingView>
+      </View>
+    </Modal>
   );
 }
 
@@ -46,4 +60,3 @@ export function DueDateRow({ date, setDate, showPicker, setShowPicker, c }) {
     </View>
   );
 }
-

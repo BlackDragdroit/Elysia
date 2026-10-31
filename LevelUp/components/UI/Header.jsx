@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme, titleFont } from "@/assets/styles/theme";
+import { useTheme, titleFont, HEADER_HEIGHT } from "@/assets/styles/theme";
 import IconButton from "./IconButton";
 import AccountButton from "./AccountButton";
 
@@ -13,10 +13,10 @@ export default function Header() {
   return (
     <View
       style={{
-        paddingTop: insets.top, backgroundColor: c.bg,
+        paddingTop: insets.top, backgroundColor: c.surface,
         borderBottomWidth: 1, borderBottomColor: c.border,
         flexDirection: "row", alignItems: "center",
-        paddingHorizontal: 16, height: 56 + insets.top,
+        paddingHorizontal: 16, height: HEADER_HEIGHT + insets.top,
       }}
     >
       <Image source={logo} style={{ width: 32, height: 32 }} resizeMode="contain" />

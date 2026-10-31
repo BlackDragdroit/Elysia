@@ -44,6 +44,7 @@ const light = {
 };
 
 export const space = { 4: 4, 8: 8, 12: 12, 16: 16, 20: 20, 24: 24, 32: 32 };
+export const HEADER_HEIGHT = 56;
 export const radius = { card: 16, control: 12, sheet: 24, pill: 999 };
 export const font = "Roboto-Variable";
 export const titleFont = "Audiowide-Regular";

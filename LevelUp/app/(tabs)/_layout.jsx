@@ -1,6 +1,9 @@
 import renderIcon from "../../assets/styles/renderIcon";
 import { Tabs } from "expo-router";
 import { Pressable, View } from "react-native";
+import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AddQuest } from "@/components/UI/AddQuest";
 import Header from "../../components/UI/Header";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
 import { OutcomeToast } from "@/components/Contexts/DataProvider";
@@ -17,6 +20,8 @@ const tabButton = (label) => (props) => (
 
 function ThemedTabs() {
   const { isDark, c } = useTheme();
+  const insets = useSafeAreaInsets();
+  const [questSheetOpen, setQuestSheetOpen] = useState(false);
 
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
@@ -33,6 +38,9 @@ function ThemedTabs() {
             elevation: 0,
             shadowOpacity: 0,
             shadowColor: "transparent",
+            height: 64 + insets.bottom,
+            paddingBottom: 8 + insets.bottom,
+            paddingTop: 8,
           },
           tabBarActiveTintColor: c.accent,
           tabBarInactiveTintColor: c.textMuted,
@@ -40,6 +48,7 @@ function ThemedTabs() {
             fontFamily: "Roboto-Variable",
             fontSize: 12,
             fontWeight: "500",
+            marginTop: 2,
           },
         }}
       >
@@ -64,7 +73,14 @@ function ThemedTabs() {
           options={{
             tabBarLabel: "",
             tabBarIcon: () => <NewQuestButton />,
-            tabBarButton: tabButton("New quest"),
+            tabBarButton: ({ href, onPress, ...props }) => (
+              <Pressable
+                {...props}
+                onPress={() => setQuestSheetOpen(true)}
+                android_ripple={{ color: "transparent" }}
+                accessibilityLabel="New quest"
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -84,6 +100,7 @@ function ThemedTabs() {
           }}
         />
       </Tabs>
+      {questSheetOpen && <AddQuest onClose={() => setQuestSheetOpen(false)} />}
     </View>
   );
 }
