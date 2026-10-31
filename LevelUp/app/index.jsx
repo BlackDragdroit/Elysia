@@ -1,4 +1,4 @@
-import { Redirect, router, Slot } from "expo-router";
+import { router } from "expo-router";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import {
@@ -7,289 +7,209 @@ import {
   KeyboardAvoidingView,
   Pressable,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useEffect, useState } from "react";
-import {
-  ThemeContext,
-  ThemeProvider,
-} from "@/components/Contexts/ThemeProvider";
-import { styles, colors } from "@/assets/styles/common";
-import {
-  GestureHandlerRootView,
-  TextInput,
-} from "react-native-gesture-handler";
+import { useContext, useState } from "react";
+import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { useData } from "@/components/Contexts/DataProvider";
+import { colors } from "@/assets/styles/common";
+import Message from "@/components/UI/Message";
 import logo from "@/assets/images/Logo(Purple).png";
-import googleLogo from "@/assets/images/Google__G__logo.png";
-import auth from "@react-native-firebase/auth";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
-const StartPage = () => {
-  const [email, setEmail] = useState("");
+// Server-mode login screen.
+export default function Login() {
+  const { theme } = useContext(ThemeContext);
+  const { settings, loginServer, switchToLocal } = useData();
+  const isDarkmode = theme === "dark";
+  const textColor = isDarkmode ? colors.textDark : colors.textLight;
+
+  const [serverUrl, setServerUrl] = useState(settings?.serverUrl || "");
+  const [username, setUsername] = useState(settings?.username || "");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId:
-        "596212355234-d9kogjf063trja4kntrdm8oivnm9les3.apps.googleusercontent.com",
-    });
-  }, []);
-
-  async function onGoogleButtonPress() {
-    setLoading(true);
-    try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
-      const userInfo = await GoogleSignin.signIn();
-      console.log("Google user info:", userInfo);
-      const idToken = userInfo.data.idToken;
-      console.log(idToken);
-      if (!idToken) {
-        console.log("No idToken returned from Google Sign-In!");
-        return;
-      }
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
-    } catch (e) {
-      console.log("Google sign-in error:", e);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const showError = (msg) => {
+    setError(true);
+    setMessage(msg);
+  };
 
   const signIn = async () => {
+    if (!serverUrl.trim() || !username.trim() || !password) {
+      showError("Fill in server URL, username and password");
+      return;
+    }
     setLoading(true);
     try {
-      await auth().signInWithEmailAndPassword(email, password);
-      console.log("Logging in");
+      await loginServer(serverUrl, username, password);
+      router.replace("/(tabs)/Home");
     } catch (e) {
-      const err = e;
-      console.log("Login failed: " + err.message);
+      showError(e.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <ThemeProvider>
-      <LoginSignup
-        email={email}
-        setEmail={setEmail}
-        password={password}
-        setPassword={setPassword}
-        signIn={signIn}
-        loading={loading}
-        setLoading={setLoading}
-        onGoogleButtonPress={onGoogleButtonPress}
-      ></LoginSignup>
-    </ThemeProvider>
-  );
-};
-
-const LoginSignup = ({
-  email,
-  setEmail,
-  password,
-  setPassword,
-  signIn,
-  loading,
-  onGoogleButtonPress,
-}) => {
-  const { theme } = useContext(ThemeContext);
-
-  const isDarkmode = theme === "dark" ? true : false;
-
-  return (
-    <GestureHandlerRootView>
-      <LinearGradient
-        colors={
-          isDarkmode
-            ? [colors.gradientDark1, colors.gradientDark2]
-            : [colors.gradientLight1, colors.gradientLight2]
-        }
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{ flex: 1 }}
+    <LinearGradient
+      colors={
+        isDarkmode
+          ? [colors.gradientDark1, colors.gradientDark2]
+          : [colors.gradientLight1, colors.gradientLight2]
+      }
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
+    >
+      {message != "" && <Message isError={error} message={message} />}
+      <KeyboardAvoidingView
+        behavior="padding"
+        style={{
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: 20,
+        }}
       >
-        <KeyboardAvoidingView
-          behavior="padding"
+        <View
           style={{
             width: "100%",
-            height: "100%",
             justifyContent: "center",
-            alignContent: "center",
             alignItems: "center",
+            marginBottom: 40,
             flexDirection: "column",
-            gap: 20,
           }}
         >
-          <View
+          <Image
+            source={logo}
+            style={{ width: 100, height: 100 }}
+            resizeMode="contain"
+          />
+          <Text
             style={{
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 40,
-              flexDirection: "column",
+              color: textColor,
+              fontFamily: "Audiowide-Regular",
+              fontSize: 40,
             }}
           >
-            <Image
-              source={logo}
-              style={{ width: 100, height: 100 }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                fontFamily: "Audiowide-Regular",
-                fontSize: 40,
-              }}
-            >
-              Elysia
-            </Text>
-          </View>
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Email"
-          />
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Password"
-          />
+            Elysia
+          </Text>
+        </View>
+        <TextInput
+          style={{
+            width: "90%",
+            height: 40,
+            borderWidth: 1,
+            borderColor: isDarkmode ? "white" : "black",
+            borderRadius: 10,
+            color: textColor,
+            textAlign: "center",
+          }}
+          value={serverUrl}
+          onChangeText={setServerUrl}
+          autoCapitalize="none"
+          keyboardType="url"
+          placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+          placeholder="Server URL (e.g. http://192.168.1.10:3001)"
+        />
+        <TextInput
+          style={{
+            width: "90%",
+            height: 40,
+            borderWidth: 1,
+            borderColor: isDarkmode ? "white" : "black",
+            borderRadius: 10,
+            color: textColor,
+            textAlign: "center",
+          }}
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+          placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+          placeholder="Username"
+        />
+        <TextInput
+          style={{
+            width: "90%",
+            height: 40,
+            borderWidth: 1,
+            borderColor: isDarkmode ? "white" : "black",
+            borderRadius: 10,
+            color: textColor,
+            textAlign: "center",
+          }}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
+          placeholder="Password"
+        />
 
-          {loading ? (
-            <ActivityIndicator size={"small"} style={{ margin: 28 }} />
-          ) : (
+        {loading ? (
+          <ActivityIndicator size={"small"} style={{ margin: 28 }} />
+        ) : (
+          <View style={{ width: "100%", flexDirection: "column", gap: 10 }}>
             <View
               style={{
                 width: "100%",
-                flexDirection: "column",
-                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 20,
+                flexDirection: "row",
+                marginTop: 30,
               }}
             >
-              <View
+              <Pressable
                 style={{
-                  width: "100%",
+                  height: 40,
+                  width: "25%",
+                  borderWidth: 1,
+                  borderColor: isDarkmode ? "white" : "black",
+                  borderRadius: 10,
                   justifyContent: "center",
-                  alignItems: "center",
-                  gap: 20,
-                  flexDirection: "row",
-                  marginTop: 30,
                 }}
+                onPress={signIn}
               >
-                <Pressable
-                  style={{
-                    height: 40,
-                    width: "20%",
-                    borderWidth: 1,
-                    borderColor: isDarkmode ? "white" : "black",
-                    borderRadius: 10,
-                    justifyContent: "center",
-                    // backgroundColor: isDarkmode
-                    //   ? colors.gradientDark1
-                    //   : "white",
-                  }}
-                  onPress={signIn}
-                >
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: isDarkmode ? colors.textDark : colors.textLight,
-                    }}
-                  >
-                    Sign In
-                  </Text>
-                </Pressable>
-
-                <Pressable
-                  style={{
-                    height: 40,
-                    width: "20%",
-                    borderWidth: 1,
-                    borderColor: isDarkmode ? "white" : "black",
-                    borderRadius: 10,
-                    justifyContent: "center",
-
-                    // backgroundColor: isDarkmode
-                    //   ? colors.gradientDark1
-                    //   : "white",
-                  }}
-                  onPress={() => router.replace("/SignUp")}
-                >
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: isDarkmode ? colors.textDark : colors.textLight,
-                    }}
-                  >
-                    Sign Up
-                  </Text>
-                </Pressable>
-              </View>
+                <Text style={{ textAlign: "center", color: textColor }}>
+                  Sign In
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  height: 40,
+                  width: "25%",
+                  borderWidth: 1,
+                  borderColor: isDarkmode ? "white" : "black",
+                  borderRadius: 10,
+                  justifyContent: "center",
+                }}
+                onPress={() => router.replace("/SignUp")}
+              >
+                <Text style={{ textAlign: "center", color: textColor }}>
+                  Sign Up
+                </Text>
+              </Pressable>
+            </View>
+            <Pressable onPress={switchToLocal} style={{ marginTop: 20 }}>
               <Text
                 style={{
-                  alignItems: "center",
                   textAlign: "center",
-                  fontSize: 20,
-                  fontFamily: "Audiowide-Regular",
-                  color: isDarkmode ? colors.textDark : colors.textLight,
+                  color: colors.purple,
+                  fontSize: 14,
                 }}
               >
-                OR
+                Use offline instead
               </Text>
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Pressable onPress={onGoogleButtonPress}>
-                  <Image
-                    style={{ width: 40, height: 40 }}
-                    source={googleLogo}
-                  />
-                </Pressable>
-              </View>
-            </View>
-          )}
-        </KeyboardAvoidingView>
-      </LinearGradient>
-    </GestureHandlerRootView>
+            </Pressable>
+          </View>
+        )}
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
-};
-
-export default StartPage;
+}

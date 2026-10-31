@@ -1,33 +1,19 @@
 import React from "react";
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useData } from "@/components/Contexts/DataProvider";
 import renderIcon from "@/assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
 import { MotiView } from "moti";
-import auth from "@react-native-firebase/auth";
+
 const AccountButton = ({ size = 48, animated = false, onPress = () => {} }) => {
   const { theme } = useContext(ThemeContext);
+  const { profile } = useData();
 
   const isDarkmode = theme === "dark" ? true : false;
-
-  const [level, setLevel] = React.useState(0);
-
-  React.useEffect(() => {
-    const getLevel = async () => {
-      try {
-        const storedLevel = await AsyncStorage.getItem("level");
-        if (storedLevel !== null) {
-          setLevel(storedLevel);
-        }
-      } catch (error) {
-        console.error("Failed to load level from AsyncStorage:", error);
-      }
-    };
-
-    getLevel();
-  });
+  const level = profile?.level ?? 1;
+  const icon = profile?.equipped?.icon || "person-standing";
 
   return (
     <View
@@ -108,7 +94,7 @@ const AccountButton = ({ size = 48, animated = false, onPress = () => {} }) => {
           </Text>
         </MotiView>
       )}
-      {renderIcon("person-standing", isDarkmode ? "black" : "white", size / 2)}
+      {renderIcon(icon, isDarkmode ? "black" : "white", size / 2)}
     </View>
   );
 };
