@@ -124,7 +124,7 @@ const BossCard = ({ boss }) => {
           }
           style={{ padding: 6 }}
         >
-          {renderIcon("trash-2", subColor, 18)}
+          {renderIcon("trash", subColor, 18)}
         </Pressable>
       </View>
 

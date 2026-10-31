@@ -1,13 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text } from "react-native";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import renderIcon from "../../assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
-import { MotiView } from "moti";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  withDelay,
+} from "react-native-reanimated";
 
 export const Achievement = ({ icon, title, descr }) => {
   const { theme } = useContext(ThemeContext);
   const isDarkmode = theme === "dark" ? true : false;
+
+  const bounce = useSharedValue(0);
+  useEffect(() => {
+    bounce.value = withDelay(
+      100,
+      withRepeat(withTiming(5, { duration: 1500 }), -1, true)
+    );
+  }, []);
+  const bounceStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: bounce.value }],
+  }));
 
   const textColor = isDarkmode ? "white" : "black";
   const boxTextColor = isDarkmode ? "#a3a3a3" : "#737373";
@@ -53,28 +70,21 @@ export const Achievement = ({ icon, title, descr }) => {
             borderRadius: 360,
           }}
         > */}
-        <MotiView
-          from={{
-            translateY: 0,
-          }}
-          animate={{ translateY: 5 }}
-          transition={{
-            loop: true,
-            type: "timing",
-            duration: 1500,
-            delay: 100,
-          }}
-          style={{
-            height: 50,
-            width: 50,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: isDarkmode ? "#333333" : "#f5f5f5",
-            borderRadius: 360,
-          }}
+        <Animated.View
+          style={[
+            bounceStyle,
+            {
+              height: 50,
+              width: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: isDarkmode ? "#333333" : "#f5f5f5",
+              borderRadius: 360,
+            },
+          ]}
         >
           {renderIcon(icon, colors.pink, 21)}
-        </MotiView>
+        </Animated.View>
       </View>
       <Text
         style={{

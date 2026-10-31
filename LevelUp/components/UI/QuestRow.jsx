@@ -79,7 +79,7 @@ const QuestRow = ({ quest, showDelete = true }) => {
           }
           style={{ padding: 6 }}
         >
-          {renderIcon("trash-2", isDarkmode ? "#a3a3a3" : "#737373", 18)}
+          {renderIcon("trash", isDarkmode ? "#a3a3a3" : "#737373", 18)}
         </Pressable>
       )}
     </View>

@@ -1,59 +1,53 @@
-import { MotiView } from "moti";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 
 export function FadeIn({ children, speed = 1000 }) {
-  const [key, setKey] = useState(0);
+  const opacity = useSharedValue(0);
 
   useFocusEffect(
     useCallback(() => {
-      setKey((prev) => prev + 1);
-    }, [])
+      opacity.value = 0;
+      opacity.value = withTiming(1, { duration: speed });
+      return () => {
+        opacity.value = 0;
+      };
+    }, [speed])
   );
 
-  return (
-    <MotiView
-      key={key}
-      from={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ type: "timing", duration: speed }}
-    >
-      {children}
-    </MotiView>
-  );
+  const style = useAnimatedStyle(() => ({ opacity: opacity.value }));
+
+  return <Animated.View style={style}>{children}</Animated.View>;
 }
 
 export function FadeInOut({ children, duration = 1000, delay = 0 }) {
-  const [visible, setVisible] = useState(true);
+  const opacity = useSharedValue(0);
 
   useFocusEffect(
     useCallback(() => {
-      setVisible(false);
-      setTimeout(() => setVisible(true), delay);
-    }, [delay])
+      let hide;
+      opacity.value = 0;
+      const show = setTimeout(() => {
+        opacity.value = withTiming(1, { duration });
+        hide = setTimeout(() => {
+          opacity.value = withTiming(0, { duration });
+        }, duration);
+      }, delay);
+      return () => {
+        clearTimeout(show);
+        if (hide) clearTimeout(hide);
+      };
+    }, [duration, delay])
   );
 
-  useEffect(() => {
-    if (visible) {
-      setTimeout(() => setVisible(false), duration);
-    }
-  }, [visible, duration]);
+  const style = useAnimatedStyle(() => ({ opacity: opacity.value }));
 
-  return (
-    <MotiView
-      style={styles.container}
-      from={{ opacity: 0 }}
-      animate={{ opacity: visible ? 1 : 0 }}
-      transition={{
-        type: "timing",
-        duration: duration,
-        delay: delay,
-      }}
-    >
-      {children}
-    </MotiView>
-  );
+  return <Animated.View style={[styles.container, style]}>{children}</Animated.View>;
 }
 
 const styles = StyleSheet.create({

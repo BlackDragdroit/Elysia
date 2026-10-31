@@ -6,7 +6,7 @@ import { useFonts } from "expo-font";
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(Appearance.getColorScheme()); // Default to system theme
+  const [theme, setTheme] = useState(Appearance.getColorScheme() || "light"); // Default to system theme
 
   const [fontsLoaded] = useFonts({
     "Audiowide-Regular": require("@/assets/fonts/Audiowide-Regular.ttf"),
