@@ -1,29 +1,19 @@
 import { router } from "expo-router";
-import "react-native-reanimated";
-import "react-native-gesture-handler";
-import {
-  ActivityIndicator,
-  Image,
-  KeyboardAvoidingView,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useState } from "react";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { Image, KeyboardAvoidingView, Platform, Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "@/components/Contexts/DataProvider";
-import { colors } from "@/assets/styles/common";
+import { useTheme, type } from "@/assets/styles/theme";
 import Message from "@/components/UI/Message";
+import TextField from "@/components/UI/TextField";
+import Button from "@/components/UI/Button";
 import logo from "@/assets/images/Logo(Purple).png";
 
 // Server-mode registration screen.
 export default function SignUp() {
-  const { theme } = useContext(ThemeContext);
+  const { c } = useTheme();
+  const insets = useSafeAreaInsets();
   const { settings, registerServer, switchToLocal } = useData();
-  const isDarkmode = theme === "dark";
-  const textColor = isDarkmode ? colors.textDark : colors.textLight;
 
   const [serverUrl, setServerUrl] = useState(settings?.serverUrl || "");
   const [displayName, setDisplayName] = useState("");
@@ -34,24 +24,15 @@ export default function SignUp() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
 
-  const showError = (msg) => {
-    setError(true);
-    setMessage(msg);
-  };
-
   const signUp = async () => {
-    if (
-      !serverUrl.trim() ||
-      !displayName.trim() ||
-      !username.trim() ||
-      !password ||
-      !passwordVerification
-    ) {
-      showError("No field can remain blank");
+    if (!serverUrl.trim() || !displayName.trim() || !username.trim() || !password || !passwordVerification) {
+      setError(true);
+      setMessage("No field can remain blank");
       return;
     }
     if (password !== passwordVerification) {
-      showError("Passwords must match");
+      setError(true);
+      setMessage("Passwords must match");
       return;
     }
     setLoading(true);
@@ -59,164 +40,43 @@ export default function SignUp() {
       await registerServer(serverUrl, username, password, displayName);
       router.replace("/(tabs)/Home");
     } catch (e) {
-      showError(e.message || "Registration failed");
+      setError(true);
+      setMessage(e.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const inputStyle = {
-    width: "90%",
-    height: 40,
-    borderWidth: 1,
-    borderColor: isDarkmode ? "white" : "black",
-    borderRadius: 10,
-    color: textColor,
-    textAlign: "center",
-  };
-  const placeholderColor = isDarkmode ? "#a3a3a3" : "#737373";
-
   return (
-    <LinearGradient
-      colors={
-        isDarkmode
-          ? [colors.gradientDark1, colors.gradientDark2]
-          : [colors.gradientLight1, colors.gradientLight2]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      {message != "" && <Message isError={error} message={message} />}
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={{
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          gap: 14,
-        }}
-      >
-        <View
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 30,
-            flexDirection: "column",
-          }}
-        >
-          <Image
-            source={logo}
-            style={{ width: 80, height: 80 }}
-            resizeMode="contain"
-          />
-          <Text
-            style={{
-              color: textColor,
-              fontFamily: "Audiowide-Regular",
-              fontSize: 40,
-            }}
-          >
-            Elysia
-          </Text>
+    <View style={{ flex: 1, backgroundColor: c.bg, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+      {message ? <Message isError={error} message={message} /> : null}
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1, justifyContent: "center", paddingHorizontal: 16 }}>
+        <View style={{ alignItems: "center", marginBottom: 32 }}>
+          <Image source={logo} style={{ width: 72, height: 72 }} resizeMode="contain" />
+          <Text style={[type.pageTitle, { fontSize: 36, color: c.text }]}>Elysia</Text>
+          <Text style={[type.body, { color: c.textMuted, marginTop: 8 }]}>Create an account on your server</Text>
         </View>
-        <TextInput
-          style={inputStyle}
-          value={serverUrl}
-          onChangeText={setServerUrl}
-          autoCapitalize="none"
-          keyboardType="url"
-          placeholderTextColor={placeholderColor}
-          placeholder="Server URL"
-        />
-        <TextInput
-          style={inputStyle}
-          value={displayName}
-          onChangeText={setDisplayName}
-          placeholderTextColor={placeholderColor}
-          placeholder="Display name"
-        />
-        <TextInput
-          style={inputStyle}
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          placeholderTextColor={placeholderColor}
-          placeholder="Username"
-        />
-        <TextInput
-          style={inputStyle}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholderTextColor={placeholderColor}
-          placeholder="Password"
-        />
-        <TextInput
-          style={inputStyle}
-          value={passwordVerification}
-          onChangeText={setPasswordVerification}
-          secureTextEntry
-          placeholderTextColor={placeholderColor}
-          placeholder="Verify Password"
-        />
-
-        {loading ? (
-          <ActivityIndicator size={"small"} style={{ margin: 28 }} />
-        ) : (
-          <View
-            style={{
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 10,
-              marginTop: 30,
-            }}
-          >
-            <View style={{ flexDirection: "row", gap: 20 }}>
-              <Pressable
-                style={{
-                  height: 40,
-                  width: 100,
-                  borderWidth: 1,
-                  borderColor: isDarkmode ? "white" : "black",
-                  borderRadius: 10,
-                  justifyContent: "center",
-                }}
-                onPress={() => router.replace("/")}
-              >
-                <Text style={{ textAlign: "center", color: textColor }}>
-                  Back
-                </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  height: 40,
-                  width: 100,
-                  borderWidth: 1,
-                  borderColor: isDarkmode ? "white" : "black",
-                  borderRadius: 10,
-                  justifyContent: "center",
-                }}
-                onPress={signUp}
-              >
-                <Text style={{ textAlign: "center", color: textColor }}>
-                  Sign Up
-                </Text>
-              </Pressable>
-            </View>
-            <Pressable onPress={switchToLocal} style={{ marginTop: 15 }}>
-              <Text style={{ textAlign: "center", color: colors.purple }}>
-                Use offline instead
-              </Text>
-            </Pressable>
-          </View>
-        )}
+        <TextField label="Server URL" value={serverUrl} onChangeText={setServerUrl}
+          autoCapitalize="none" keyboardType="url" placeholder="http://192.168.1.10:3001" />
+        <TextField label="Display name" value={displayName} onChangeText={setDisplayName}
+          placeholder="Display name" style={{ marginTop: 12 }} />
+        <TextField label="Username" value={username} onChangeText={setUsername}
+          autoCapitalize="none" placeholder="Username" style={{ marginTop: 12 }} />
+        <TextField label="Password" value={password} onChangeText={setPassword}
+          secureTextEntry placeholder="Password" style={{ marginTop: 12 }} />
+        <TextField label="Confirm password" value={passwordVerification} onChangeText={setPasswordVerification}
+          secureTextEntry placeholder="Password" style={{ marginTop: 12 }} />
+        <Button title="Create account" fullWidth loading={loading} onPress={signUp} style={{ marginTop: 20 }} />
+        <Pressable onPress={() => router.replace("/")} hitSlop={8}
+          style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}>
+          <Text style={[type.label, { color: c.accentText }]}>Sign in instead</Text>
+        </Pressable>
+        <Pressable onPress={switchToLocal} hitSlop={8}
+          style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}>
+          <Text style={[type.label, { color: c.accentText }]}>Use offline instead</Text>
+        </Pressable>
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </View>
   );
 }

@@ -262,15 +262,5 @@ export function OutcomeToast() {
     return null;
   }
 
-  return (
-    <View style={{ position: "absolute", top: 60, right: 10, zIndex: 1000 }}>
-      <Message
-        key={key}
-        isError={isError}
-        message={message}
-        duration={3500}
-        width={240}
-      />
-    </View>
-  );
+  return <Message key={key} isError={isError} message={message} duration={3500} />;
 }

@@ -1,27 +1,19 @@
 import { router } from "expo-router";
-import {
-  ActivityIndicator,
-  Image,
-  KeyboardAvoidingView,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useState } from "react";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { Image, KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "@/components/Contexts/DataProvider";
-import { colors } from "@/assets/styles/common";
+import { useTheme, type } from "@/assets/styles/theme";
 import Message from "@/components/UI/Message";
+import TextField from "@/components/UI/TextField";
+import Button from "@/components/UI/Button";
 import logo from "@/assets/images/Logo(Purple).png";
 
 // First-launch screen for local mode: ask for a display name.
 export default function Welcome() {
-  const { theme } = useContext(ThemeContext);
+  const { c } = useTheme();
+  const insets = useSafeAreaInsets();
   const { updateProfile } = useData();
-  const isDarkmode = theme === "dark";
-  const textColor = isDarkmode ? colors.textDark : colors.textLight;
 
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,97 +39,18 @@ export default function Welcome() {
   };
 
   return (
-    <LinearGradient
-      colors={
-        isDarkmode
-          ? [colors.gradientDark1, colors.gradientDark2]
-          : [colors.gradientLight1, colors.gradientLight2]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      {message != "" && <Message isError={error} message={message} />}
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={{
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          gap: 20,
-        }}
-      >
-        <View
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 40,
-            flexDirection: "column",
-          }}
-        >
-          <Image
-            source={logo}
-            style={{ width: 100, height: 100 }}
-            resizeMode="contain"
-          />
-          <Text
-            style={{
-              color: textColor,
-              fontFamily: "Audiowide-Regular",
-              fontSize: 40,
-            }}
-          >
-            Elysia
-          </Text>
+    <View style={{ flex: 1, backgroundColor: c.bg, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+      {message ? <Message isError={error} message={message} /> : null}
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1, justifyContent: "center", paddingHorizontal: 16 }}>
+        <View style={{ alignItems: "center", marginBottom: 32 }}>
+          <Image source={logo} style={{ width: 72, height: 72 }} resizeMode="contain" />
+          <Text style={[type.pageTitle, { fontSize: 36, color: c.text }]}>Elysia</Text>
+          <Text style={[type.body, { color: c.textMuted, marginTop: 8 }]}>What should we call you?</Text>
         </View>
-        <Text style={{ color: textColor, fontSize: 16 }}>
-          What should we call you, adventurer?
-        </Text>
-        <TextInput
-          style={{
-            width: "90%",
-            height: 40,
-            borderWidth: 1,
-            borderColor: isDarkmode ? "white" : "black",
-            borderRadius: 10,
-            color: textColor,
-            textAlign: "center",
-          }}
-          value={name}
-          onChangeText={setName}
-          placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-          placeholder="Your name"
-        />
-        {loading ? (
-          <ActivityIndicator size="small" style={{ margin: 28 }} />
-        ) : (
-          <Pressable
-            style={{
-              height: 40,
-              width: "40%",
-              borderRadius: 10,
-              justifyContent: "center",
-              backgroundColor: colors.purple,
-              marginTop: 30,
-            }}
-            onPress={start}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                color: "white",
-                fontWeight: "bold",
-              }}
-            >
-              Start your journey
-            </Text>
-          </Pressable>
-        )}
+        <TextField label="Display name" placeholder="Your name" value={name} onChangeText={setName} />
+        <Button title="Start your journey" fullWidth loading={loading} onPress={start} style={{ marginTop: 20 }} />
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </View>
   );
 }
