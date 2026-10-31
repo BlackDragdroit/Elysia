@@ -158,7 +158,6 @@ export default function Home() {
 
 const localStyles = StyleSheet.create({
   boxView: {
-    flex: 1,
     alignContent: "center",
     justifyContent: "center",
     alignItems: "center",

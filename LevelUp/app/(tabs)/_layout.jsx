@@ -31,6 +31,7 @@ function ThemedTabs() {
             shadowColor: "transparent",
           },
           tabBarActiveTintColor: colors.purple,
+          tabBarInactiveTintColor: isDarkmode ? "#a3a3a3" : "#737373",
           tabBarLabelStyle: {
             fontFamily: font,
           },
