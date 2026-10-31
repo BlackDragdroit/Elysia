@@ -13,7 +13,6 @@ import * as remoteStore from "@/services/remoteStore";
 import { getSettings, saveSettings } from "@/services/settings";
 import Message from "@/components/UI/Message";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
-import { colors } from "@/assets/styles/common";
 
 export const DataContext = createContext();
 

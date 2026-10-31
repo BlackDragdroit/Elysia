@@ -6,7 +6,7 @@ import {
   ThemeContext,
 } from "@/components/Contexts/ThemeProvider";
 import { DataProvider, DataContext } from "@/components/Contexts/DataProvider";
-import { colors } from "@/assets/styles/common";
+import { useTheme } from "@/assets/styles/theme";
 
 export default function RootLayout() {
   return (
@@ -19,7 +19,7 @@ export default function RootLayout() {
 }
 
 function Gate() {
-  const { theme } = useContext(ThemeContext);
+  const { isDark, c } = useTheme();
   const { settings, profile, loading } = useContext(DataContext);
   const router = useRouter();
   const segments = useSegments();
@@ -52,10 +52,10 @@ function Gate() {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: theme === "dark" ? "#181818" : "#f4f4f4",
+          backgroundColor: c.bg,
         }}
       >
-        <ActivityIndicator size="large" color={colors.purple} />
+        <ActivityIndicator size="large" color={c.accent} />
       </View>
     );
   }
