@@ -55,7 +55,7 @@ export function AddQuest({ onClose }) {
               style={{ flex: 1, alignItems: "center", paddingVertical: 10, borderRadius: radius.control,
                 borderWidth: 1, borderColor: sel ? c.accent : c.border, backgroundColor: sel ? c.accentSoft : c.surface }}>
               <Text style={[type.label, { color: sel ? c.accentText : c.text, textTransform: "capitalize" }]}>{t}</Text>
-              {t === "optional" ? <Text style={[type.caption, { color: c.textMuted }]}>half XP</Text> : null}
+              <Text style={[type.caption, { color: c.textMuted }]}>{t === "optional" ? "half XP" : "full XP"}</Text>
             </Pressable>
           );
         })}

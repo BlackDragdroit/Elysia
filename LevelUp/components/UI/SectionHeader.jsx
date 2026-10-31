@@ -5,7 +5,7 @@ import { useTheme, type } from "@/assets/styles/theme";
 export default function SectionHeader({ title, action, onAction }) {
   const { c } = useTheme();
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 24, marginBottom: 12 }}>
+    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 28, marginBottom: 12 }}>
       <Text style={[type.sectionTitle, { color: c.text }]}>{title}</Text>
       {action ? (
         <Pressable onPress={onAction} hitSlop={12} style={{ minHeight: 48, justifyContent: "center" }}

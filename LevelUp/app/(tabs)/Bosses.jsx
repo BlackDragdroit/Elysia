@@ -12,19 +12,20 @@ import Chip from "@/components/UI/Chip";
 import { AddBoss } from "@/components/UI/AddBoss";
 import { formatDueDate } from "@/services/filters";
 
-function StepRow({ step, bossDefeated, onComplete, c }) {
+function StepRow({ step, bossDefeated, onComplete, last, c }) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10 }}>
+    <View style={{ flexDirection: "row", alignItems: "center",
+      borderBottomWidth: last ? 0 : 1, borderBottomColor: c.border }}>
       <Pressable
         onPress={step.completed || bossDefeated ? undefined : onComplete}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: !!step.completed }}
         accessibilityLabel={`Complete step ${step.text}`}
         hitSlop={10}
-        style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -10 }}
+        style={{ minWidth: 48, minHeight: 48, alignItems: "center", justifyContent: "center", marginLeft: -10 }}
       >
         <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: 2,
-          borderColor: step.completed ? c.accent : c.border,
+          borderColor: step.completed ? c.accent : c.textMuted,
           backgroundColor: step.completed ? c.accent : "transparent",
           alignItems: "center", justifyContent: "center" }}>
           {step.completed ? renderIcon("check", "#ffffff", 13) : null}
@@ -59,12 +60,14 @@ export default function Bosses() {
                 </View>
                 <View style={{ flex: 1, marginLeft: 12 }}>
                   <Text style={[type.body, { fontSize: 17, fontWeight: "700", color: c.text }]}>{b.title}</Text>
-                  <Text style={[type.caption, { color: c.textMuted, marginTop: 2 }]}>
-                    {done} of {b.steps.length} steps{b.dueDate ? ` · due ${formatDueDate(b.dueDate)}` : ""}
-                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", marginTop: 2, gap: 8 }}>
+                    <Text style={[type.caption, { color: c.textMuted }]}>
+                      {done} of {b.steps.length} steps{b.dueDate ? ` · due ${formatDueDate(b.dueDate)}` : ""}
+                    </Text>
+                    {b.defeated ? <Chip label="Defeated" color={c.accentText} bg={c.accentSoft} /> : null}
+                  </View>
                 </View>
-                {b.defeated ? <Chip label="Defeated" color={c.accentText} bg={c.accentSoft} /> : null}
-                <IconButton icon="trash" color={c.danger} accessibilityLabel={`Delete ${b.title}`}
+                <IconButton icon="trash" variant="plain" color={c.textMuted} accessibilityLabel={`Delete ${b.title}`}
                   onPress={() => Alert.alert("Delete boss battle", `Delete "${b.title}"?`, [
                     { text: "Cancel", style: "cancel" },
                     { text: "Delete", style: "destructive", onPress: () => deleteBoss(b.id) },
@@ -72,9 +75,9 @@ export default function Bosses() {
                   style={{ marginRight: -8 }} />
               </View>
               <ProgressBar progress={done / b.steps.length} style={{ marginTop: 12, marginBottom: 4 }} />
-              {b.steps.map((s) => (
-                <StepRow key={s.id} step={s} bossDefeated={b.defeated} c={c}
-                  onComplete={() => completeBossStep(b.id, s.id)} />
+              {b.steps.map((st, si) => (
+                <StepRow key={st.id} step={st} bossDefeated={b.defeated} last={si === b.steps.length - 1} c={c}
+                  onComplete={() => completeBossStep(b.id, st.id)} />
               ))}
             </Card>
           );

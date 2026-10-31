@@ -94,7 +94,7 @@ function SettingsTab({ settings, profile, updateProfile, switchToLocal, switchTo
       <Text style={[type.sectionTitle, { color: c.text, marginBottom: 8 }]}>Profile</Text>
       <Card>
         <TextField label="Display name" value={name} onChangeText={setName} error={error} />
-        <Button title="Save" style={{ marginTop: 12, alignSelf: "flex-start" }}
+        <Button title="Save" fullWidth style={{ marginTop: 12 }}
           onPress={async () => { setError(null); setSaved(false); try { await updateProfile({ displayName: name }); setSaved(true); setTimeout(() => setSaved(false), 2000); } catch (e) { setError(e.message); } }} />
         {saved ? <Text style={[type.caption, { color: c.textMuted, marginTop: 8 }]}>Saved</Text> : null}
       </Card>
@@ -107,13 +107,13 @@ function SettingsTab({ settings, profile, updateProfile, switchToLocal, switchTo
           <>
             <TextField label="Server URL" value={serverUrl} onChangeText={(t) => { setServerUrl(t); setUrlError(null); }}
               placeholder="http://192.168.1.10:3001" autoCapitalize="none" error={urlError} style={{ marginTop: 12 }} />
-            <Button title="Connect to server" variant="secondary" style={{ marginTop: 12 }}
+            <Button title="Connect to server" variant="secondary" fullWidth style={{ marginTop: 12 }}
               onPress={() => { if (!serverUrl.trim()) { setUrlError("Enter a server URL"); return; } switchToServer(serverUrl.trim()); }} />
           </>
         ) : (
-          <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
-            <Button title="Log out" variant="secondary" onPress={logout} />
-            <Button title="Switch to offline mode" variant="secondary" onPress={switchToLocal} />
+          <View style={{ marginTop: 12, gap: 8 }}>
+            <Button title="Switch to offline mode" fullWidth onPress={switchToLocal} />
+            <Button title="Log out" variant="secondary" fullWidth onPress={logout} />
           </View>
         )}
         <Text style={[type.caption, { color: c.textMuted, marginTop: 12 }]}>

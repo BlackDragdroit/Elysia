@@ -59,14 +59,16 @@ export default function Login() {
         <TextField label="Password" value={password} onChangeText={setPassword}
           secureTextEntry placeholder="Password" style={{ marginTop: 12 }} />
         <Button title="Sign in" fullWidth loading={loading} onPress={signIn} style={{ marginTop: 20 }} />
-        <Pressable onPress={() => router.replace("/SignUp")} hitSlop={8}
-          style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}>
-          <Text style={[type.label, { color: c.accentText }]}>Create an account</Text>
-        </Pressable>
-        <Pressable onPress={switchToLocal} hitSlop={8}
-          style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}>
-          <Text style={[type.label, { color: c.accentText }]}>Use offline instead</Text>
-        </Pressable>
+        <View style={{ gap: 8 }}>
+          <Pressable onPress={() => router.replace("/SignUp")} hitSlop={8}
+            style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}>
+            <Text style={[type.label, { color: c.accentText }]}>Create an account</Text>
+          </Pressable>
+          <Pressable onPress={switchToLocal} hitSlop={8}
+            style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}>
+            <Text style={[type.label, { color: c.accentText }]}>Use offline instead</Text>
+          </Pressable>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );

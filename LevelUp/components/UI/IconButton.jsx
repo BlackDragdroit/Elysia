@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 import renderIcon from "@/assets/styles/renderIcon";
 import { useTheme } from "@/assets/styles/theme";
 
-export default function IconButton({ icon, onPress, accessibilityLabel, color, size = 20, style }) {
+export default function IconButton({ icon, onPress, accessibilityLabel, color, size = 20, style, variant }) {
   const { c } = useTheme();
   return (
     <Pressable
@@ -16,7 +16,7 @@ export default function IconButton({ icon, onPress, accessibilityLabel, color, s
         style,
       ]}
     >
-      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: c.surfaceRaised, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: variant === "plain" ? "transparent" : c.surfaceRaised, alignItems: "center", justifyContent: "center" }}>
         {renderIcon(icon, color || c.textMuted, size)}
       </View>
     </Pressable>

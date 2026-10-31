@@ -27,7 +27,7 @@ export default function QuestRow({ quest, onComplete, onDelete, showDelete = tru
         style={{ minWidth: 48, minHeight: 48, alignItems: "center", justifyContent: "center", marginLeft: -10 }}
       >
         <View style={{ width: 26, height: 26, borderRadius: 13, borderWidth: 2,
-          borderColor: quest.completed ? c.accent : c.border,
+          borderColor: quest.completed ? c.accent : c.textMuted,
           backgroundColor: quest.completed ? c.accent : "transparent",
           alignItems: "center", justifyContent: "center" }}>
           {quest.completed ? renderIcon("check", "#ffffff", 14) : null}
@@ -58,7 +58,7 @@ export default function QuestRow({ quest, onComplete, onDelete, showDelete = tru
         <Text style={[type.caption, { color: c.accentText, fontWeight: "600", marginHorizontal: 8 }]}>+{xp} XP</Text>
       ) : null}
       {showDelete && onDelete ? (
-        <IconButton icon="trash" color={c.danger} accessibilityLabel={`Delete ${quest.title}`}
+        <IconButton icon="trash" variant="plain" color={c.textMuted} accessibilityLabel={`Delete ${quest.title}`}
           onPress={() => Alert.alert("Delete quest", `Delete "${quest.title}"?`, [
             { text: "Cancel", style: "cancel" },
             { text: "Delete", style: "destructive", onPress: onDelete },
