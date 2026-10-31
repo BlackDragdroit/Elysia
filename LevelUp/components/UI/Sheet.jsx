@@ -20,20 +20,24 @@ export function Sheet({ title, onClose, children }) {
   }, []);
   const anim = useAnimatedStyle(() => ({ opacity: op.value, transform: [{ translateY: ty.value }] }));
 
+  const content = (
+    <Animated.View style={[anim, { backgroundColor: c.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, padding: 20, paddingBottom: 20 + insets.bottom, maxHeight: "90%" }]}>
+      <View style={{ alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: c.border, marginBottom: 12 }} />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <Text style={[type.sectionTitle, { color: c.text }]}>{title}</Text>
+        <IconButton icon="x" accessibilityLabel="Close" onPress={onClose} />
+      </View>
+      <ScrollView style={{ flexGrow: 0 }} keyboardShouldPersistTaps="handled">{children}</ScrollView>
+    </Animated.View>
+  );
+
   return (
     <Modal transparent visible animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable style={[StyleSheet.absoluteFillObject, { backgroundColor: "rgba(0,0,0,0.5)" }]} onPress={onClose} accessibilityLabel="Close" accessibilityRole="button" />
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <Animated.View style={[anim, { backgroundColor: c.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, padding: 20, paddingBottom: 20 + insets.bottom, maxHeight: "90%" }]}>
-            <View style={{ alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: c.border, marginBottom: 12 }} />
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <Text style={[type.sectionTitle, { color: c.text }]}>{title}</Text>
-              <IconButton icon="x" accessibilityLabel="Close" onPress={onClose} />
-            </View>
-            <ScrollView keyboardShouldPersistTaps="handled">{children}</ScrollView>
-          </Animated.View>
-        </KeyboardAvoidingView>
+        {Platform.OS === "web" ? content : (
+          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>{content}</KeyboardAvoidingView>
+        )}
       </View>
     </Modal>
   );
