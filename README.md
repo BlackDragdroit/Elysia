@@ -35,9 +35,9 @@ entering the URL of a self-hosted backend and registering/logging in. Server
 mode authenticates with username + password (JWT). Data is *not* migrated when
 switching between local and server mode — each mode has its own profile.
 
-> Note: server mode over plain `http://` on your LAN works in Expo Go / dev
-> builds. Release Android builds block cleartext HTTP — serve the API over
-> HTTPS or add a cleartext-traffic exception in the app config.
+> Note: the Android release build allows plain `http://` to a self-hosted
+> server on your LAN (`usesCleartextTraffic` is enabled via
+> `expo-build-properties`), so no HTTPS setup is needed.
 
 ## Self-hosting the server
 
