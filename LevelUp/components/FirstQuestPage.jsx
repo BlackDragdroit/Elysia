@@ -32,7 +32,7 @@ const FirstQuestPage = () => {
   return (
     <FadeIn speed={100}>
       <View style={styles.container}>
-        <StatusBar translucent />
+        <StatusBar />
         <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
           <Pressable
             style={styles.button}

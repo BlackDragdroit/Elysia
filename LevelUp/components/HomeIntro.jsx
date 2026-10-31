@@ -10,7 +10,7 @@ const HomeIntro = () => {
     <View style={styles.container}>
       <FadeInOut duration={2000}>
         <View style={styles.textContainer}>
-          <StatusBar translucent />
+          <StatusBar />
           <Text style={commonStyles.title}>This is your Home Page</Text>
         </View>
       </FadeInOut>

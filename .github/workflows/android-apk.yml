@@ -1,0 +1,82 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, finish-mvp]
+    paths:
+      - "LevelUp/**"
+      - "shared/**"
+      - ".github/workflows/android-apk.yml"
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: LevelUp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: LevelUp/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: npm ci
+
+      # Every build gets a higher versionCode so Android installs it as an update.
+      - name: Set versionCode from run number
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const cfg = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            cfg.expo.android.versionCode = Number(process.env.RUN_NUMBER);
+            fs.writeFileSync("app.json", JSON.stringify(cfg, null, 2));
+          '
+          echo "APP_VERSION=$(node -p 'require("./app.json").expo.version')" >> "$GITHUB_ENV"
+
+      - run: npx expo prebuild --platform android --no-install
+
+      - name: Build release APK (arm64)
+        working-directory: LevelUp/android
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon
+
+      - name: Collect APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk "$RUNNER_TEMP/Elysia.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Elysia-apk
+          path: ${{ runner.temp }}/Elysia.apk
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: v${{ env.APP_VERSION }}-build.${{ github.run_number }}
+        run: |
+          gh release create "$TAG" "$RUNNER_TEMP/Elysia.apk" \
+            --target "$GITHUB_SHA" \
+            --title "Elysia $APP_VERSION (build ${{ github.run_number }})" \
+            --generate-notes \
+            --latest

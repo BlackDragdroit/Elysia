@@ -4,7 +4,12 @@ import renderIcon from "@/assets/styles/renderIcon";
 import { colors } from "@/assets/styles/common";
 import { ThemeContext } from "../Contexts/ThemeProvider";
 
-function Message({ isError = false, message = "", duration = 2000 }) {
+function Message({
+  isError = false,
+  message = "",
+  duration = 2000,
+  width = 150,
+}) {
   const { theme } = useContext(ThemeContext);
   const isDarkmode = theme === "dark";
   let backColor = isDarkmode ? "black" : "white";
@@ -29,8 +34,10 @@ function Message({ isError = false, message = "", duration = 2000 }) {
       style={{
         backgroundColor: backColor,
         borderRadius: 5,
-        width: 150,
-        height: 80,
+        width: width,
+        minHeight: 80,
+        paddingVertical: 12,
+        paddingHorizontal: 8,
         position: "absolute",
         top: 10,
         right: 10,
@@ -56,7 +63,7 @@ function Message({ isError = false, message = "", duration = 2000 }) {
         style={{
           color: isDarkmode ? colors.textDark : colors.textLight,
           textAlign: "center",
-          width: 130,
+          width: width - 20,
           fontSize: 12,
         }}
       >

@@ -4,41 +4,34 @@ import { useContext } from "react";
 import { Pressable, View } from "react-native";
 import Header from "../../components/UI/Header";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
-import {
-  ThemeProvider,
-  ThemeContext,
-} from "@/components/Contexts/ThemeProvider";
-import { UserInfoProvider } from "@/components/Contexts/UserInfoProvider";
+import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { OutcomeToast } from "@/components/Contexts/DataProvider";
 import { font, colors } from "@/assets/styles/common";
 
 export default function TabsLayout() {
-  return (
-    <UserInfoProvider>
-      <ThemeProvider>
-        <ThemedTabs />
-      </ThemeProvider>
-    </UserInfoProvider>
-  );
+  return <ThemedTabs />;
 }
 
 function ThemedTabs() {
-  const { theme } = useContext(ThemeContext); // Access theme from context
-  const isDarkmode = theme === "dark"; // Determine if dark mode is active
+  const { theme } = useContext(ThemeContext);
+  const isDarkmode = theme === "dark";
 
   return (
     <View style={{ flex: 1 }}>
       <Header />
+      <OutcomeToast />
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: isDarkmode ? "#171717" : "#ffffff", // Dynamic background color
+            backgroundColor: isDarkmode ? "#171717" : "#ffffff",
             borderTopWidth: 0,
             elevation: 0,
             shadowOpacity: 0,
             shadowColor: "transparent",
           },
           tabBarActiveTintColor: colors.purple,
+          tabBarInactiveTintColor: isDarkmode ? "#a3a3a3" : "#737373",
           tabBarLabelStyle: {
             fontFamily: font,
           },

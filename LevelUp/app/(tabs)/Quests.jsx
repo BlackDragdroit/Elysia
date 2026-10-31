@@ -2,21 +2,20 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
-import { useSearchParams } from "expo-router/build/hooks";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { useData } from "@/components/Contexts/DataProvider";
 import { styles, colors } from "@/assets/styles/common";
 import { NewQuestButton } from "@/components/UI/NewQuestButton";
 import renderIcon from "@/assets/styles/renderIcon";
 import Box from "@/components/UI/Box";
+import QuestRow from "@/components/UI/QuestRow";
 import { AddQuest } from "@/components/UI/AddQuest";
+import { isToday, isUpcoming } from "@/services/filters";
 
 const Quests = () => {
-  let params = useSearchParams();
-
   const { theme } = useContext(ThemeContext);
 
-  const isDarkmode = theme === "dark" ? true : false;
-
+  const isDarkmode = theme === "dark";
   const textColor = isDarkmode ? colors.textDark : colors.textLight;
 
   const [newQuestUI, setNewQuestUI] = useState(false);
@@ -60,19 +59,34 @@ const Quests = () => {
               </Pressable>
             </View>
           </View>
-          {taskMapper(
-            textColor,
-            isDarkmode ? "#27272a" : "#f5f5f4",
-            isDarkmode ? "black" : "white"
-          )}
+          <TaskMapper
+            textColor={textColor}
+            back1={isDarkmode ? "#27272a" : "#f5f5f4"}
+            back2={isDarkmode ? "black" : "white"}
+          />
         </ScrollView>
       </FadeIn>
     </LinearGradient>
   );
 };
 
-const taskMapper = (textColor, back1, back2) => {
+const TaskMapper = ({ textColor, back1, back2 }) => {
+  const { quests } = useData();
   const [selected, setSelected] = useState(0);
+
+  const today = quests.filter(isToday);
+  const upcoming = quests.filter(isUpcoming);
+  const completed = quests
+    .filter((q) => q.completed)
+    .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+
+  const sections = [today, upcoming, completed];
+  const emptyTexts = [
+    "No quests for today. Add a new quest to get started!",
+    "No upcoming quests scheduled. Plan ahead by adding some future quests!",
+    "You haven't completed any quests yet. Get to work!",
+  ];
+  const current = sections[selected];
 
   return (
     <View style={{ alignItems: "center" }}>
@@ -120,16 +134,14 @@ const taskMapper = (textColor, back1, back2) => {
           </Text>
         </Pressable>
       </View>
-      {selected == 0 && (
-        <Box>No quests for today. Add a new quest to get started!</Box>
-      )}
-      {selected == 1 && (
-        <Box>
-          No upcoming quests scheduled. Plan ahead by adding some future quests!
+      {current.length === 0 ? (
+        <Box>{emptyTexts[selected]}</Box>
+      ) : (
+        <Box style={{ flexDirection: "column", alignItems: "stretch" }}>
+          {current.map((q) => (
+            <QuestRow key={q.id} quest={q} />
+          ))}
         </Box>
-      )}
-      {selected == 2 && (
-        <Box>You haven't completed any quests yet. Get to work!</Box>
       )}
     </View>
   );

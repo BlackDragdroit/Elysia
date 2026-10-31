@@ -4,14 +4,12 @@ import {
   Text,
   Pressable,
   TextInput,
-  StyleSheet,
   ScrollView,
 } from "react-native";
 import { styles, colors } from "@/assets/styles/common";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { useData } from "@/components/Contexts/DataProvider";
 import renderIcon from "../../assets/styles/renderIcon";
-import { useNavigation } from "expo-router";
-import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export const AddBoss = ({ onClose }) => {
@@ -43,11 +41,11 @@ export const AddBoss = ({ onClose }) => {
           borderColor: "#1f1f21",
         }}
       >
-        <ScrollView>
+        <ScrollView style={{ width: "100%" }}>
           <View
             style={{
               width: "100%",
-              height: "10%",
+              height: 60,
               justifyContent: "center",
             }}
           >
@@ -77,15 +75,19 @@ export const AddBoss = ({ onClose }) => {
               Add Boss Battle
             </Text>
           </View>
-          {AddQuestContent(isDarkmode, onClose)}
+          <AddBossContent isDarkmode={isDarkmode} onClose={onClose} />
         </ScrollView>
       </View>
     </View>
   );
 };
 
-const AddQuestContent = (isDarkmode, onClose) => {
+const AddBossContent = ({ isDarkmode, onClose }) => {
+  const { createBoss } = useData();
+  const [title, setTitle] = useState("");
+  const [error, setError] = useState("");
   const [date, setDate] = useState(new Date());
+  const [hasDate, setHasDate] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [padding, setPadding] = useState(50);
   const paddingAdjust = 5;
@@ -98,6 +100,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
+      setHasDate(true);
     }
     setShowDatePicker(false);
   };
@@ -121,6 +124,28 @@ const AddQuestContent = (isDarkmode, onClose) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) => (step.id === id ? { ...step, text } : step))
     );
+  };
+
+  const submit = async () => {
+    if (!title.trim()) {
+      setError("A boss needs a title");
+      return;
+    }
+    const stepTexts = steps.map((s) => s.text.trim()).filter((t) => t.length > 0);
+    if (stepTexts.length < 2) {
+      setError("A boss battle needs at least 2 steps");
+      return;
+    }
+    try {
+      await createBoss({
+        title: title.trim(),
+        dueDate: hasDate ? date.toISOString() : null,
+        steps: stepTexts,
+      });
+      onClose();
+    } catch (e) {
+      setError(e.message || "Could not create boss");
+    }
   };
 
   return (
@@ -154,59 +179,11 @@ const AddQuestContent = (isDarkmode, onClose) => {
               padding: 5,
             },
           ]}
+          value={title}
+          onChangeText={setTitle}
           placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
           placeholder="e.g. Learn Spanish Basics"
         />
-
-        <View
-          style={{
-            width: "100%",
-            marginTop: 20,
-            marginBottom: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ width: "48%" }}>
-            <Text
-              style={{ color: isDarkmode ? colors.textDark : colors.textLight }}
-            >
-              Description
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            height: 40,
-            width: "100%",
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginTop: 20,
-            marginBottom: 20,
-          }}
-        >
-          <TextInput
-            style={[
-              {
-                width: "100%",
-                height: 80,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                backgroundColor: isDarkmode ? "black" : "white",
-                textAlign: "left",
-                textAlignVertical: "top",
-                padding: 5,
-              },
-            ]}
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="e.g. Complete the beginner's course"
-          />
-        </View>
 
         <View style={{ width: "100%", marginTop: 20 }}>
           <Text
@@ -287,7 +264,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
             gap: 10,
             flexDirection: "row",
           }}
-          onPress={setShowDatePicker}
+          onPress={() => setShowDatePicker(true)}
         >
           {renderIcon(
             "calendar",
@@ -300,20 +277,26 @@ const AddQuestContent = (isDarkmode, onClose) => {
               textAlign: "center",
             }}
           >
-            {new Intl.DateTimeFormat("en-US", {
-              weekday: "short",
-              year: "numeric",
-              month: "long", // e.g., "April"
-              day: "2-digit",
-            }).format(date)}
+            {hasDate
+              ? new Intl.DateTimeFormat("en-US", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                }).format(date)
+              : "Pick a due date (optional)"}
           </Text>
         </Pressable>
+
+        {error != "" && (
+          <Text style={{ color: "#ef4444", marginTop: 10 }}>{error}</Text>
+        )}
 
         <View
           style={{
             width: "100%",
             flexDirection: "row",
-            marginTop: 40,
+            marginTop: 30,
             justifyContent: "space-between",
           }}
         >
@@ -346,6 +329,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
               justifyContent: "center",
               backgroundColor: colors.purple,
             }}
+            onPress={submit}
           >
             <Text
               style={{
@@ -366,29 +350,10 @@ const AddQuestContent = (isDarkmode, onClose) => {
             themeVariant="light"
           />
         )}
-        {/* <TextInput
-        style={[
-          {
-            width: "90%",
-            height: 40,
-            borderWidth: 1,
-            borderColor: isDarkmode ? "white" : "black",
-            borderRadius: 10,
-            color: isDarkmode ? "white" : "black",
-            backgroundColor: isDarkmode ? "black" : "white",
-          },
-        ]}
-        placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-        placeholder="What needs to be done?"
-      /> */}
       </View>
     </View>
   );
 };
-
-// const DateTimePicker = ({ isDarkmode, style = {} }) => {
-//   return <View style={style}></View>;
-// };
 
 const Step = ({ id, text, isDarkmode, onRemove, onUpdateText }) => {
   return (

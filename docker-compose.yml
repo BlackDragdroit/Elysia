@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/elysia
+      PORT: 3001
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the environment or a .env file}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:

@@ -1,28 +1,36 @@
 const mongoose = require("mongoose");
 
-const Schema = new mongoose.Schema(
+const questSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
-    difficultyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Difficulty",
-      required: true,
+    title: { type: String, required: true },
+    type: { type: String, enum: ["core", "optional"], default: "core" },
+    difficulty: {
+      type: String,
+      enum: ["easy", "medium", "hard", "epic"],
+      default: "easy",
     },
-    title: String,
-    completed: {
-      type: Boolean,
-      default: false,
-    },
-    reward: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
-    },
+    dueDate: { type: Date, default: null },
+    completed: { type: Boolean, default: false },
+    completedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Quest", Schema);
+questSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+    delete ret.userId;
+    delete ret.updatedAt;
+    return ret;
+  },
+});
+
+module.exports = mongoose.model("Quest", questSchema);

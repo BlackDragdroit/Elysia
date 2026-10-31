@@ -1,4 +1,4 @@
-import { Redirect, router, Slot } from "expo-router";
+import { router } from "expo-router";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import {
@@ -7,325 +7,216 @@ import {
   KeyboardAvoidingView,
   Pressable,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useEffect, useState } from "react";
-import {
-  ThemeContext,
-  ThemeProvider,
-} from "@/components/Contexts/ThemeProvider";
-import { styles, colors } from "@/assets/styles/common";
-import {
-  GestureHandlerRootView,
-  TextInput,
-} from "react-native-gesture-handler";
-import logo from "@/assets/images/Logo(Purple).png";
-import auth from "@react-native-firebase/auth";
+import { useContext, useState } from "react";
+import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { useData } from "@/components/Contexts/DataProvider";
+import { colors } from "@/assets/styles/common";
 import Message from "@/components/UI/Message";
+import logo from "@/assets/images/Logo(Purple).png";
 
-const SignUp = () => {
-  const [first, setFirst] = useState("");
-  const [last, setLast] = useState("");
-  const [email, setEmail] = useState("");
+// Server-mode registration screen.
+export default function SignUp() {
+  const { theme } = useContext(ThemeContext);
+  const { settings, registerServer, switchToLocal } = useData();
+  const isDarkmode = theme === "dark";
+  const textColor = isDarkmode ? colors.textDark : colors.textLight;
+
+  const [serverUrl, setServerUrl] = useState(settings?.serverUrl || "");
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(false);
   const [passwordVerification, setPasswordVerification] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
+
+  const showError = (msg) => {
+    setError(true);
+    setMessage(msg);
+  };
 
   const signUp = async () => {
+    if (
+      !serverUrl.trim() ||
+      !displayName.trim() ||
+      !username.trim() ||
+      !password ||
+      !passwordVerification
+    ) {
+      showError("No field can remain blank");
+      return;
+    }
+    if (password !== passwordVerification) {
+      showError("Passwords must match");
+      return;
+    }
     setLoading(true);
     try {
-      const userCred = await auth().createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      userCred.user.updateProfile({ displayName: first + " " + last });
-      console.log("Creating User...");
+      await registerServer(serverUrl, username, password, displayName);
+      router.replace("/(tabs)/Home");
     } catch (e) {
-      const err = e;
-      console.log("Registration failed: " + err);
-      setError(true);
-      setMessage("Something went wrong");
+      showError(e.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <ThemeProvider>
-      <Content
-        first={first}
-        setFirst={setFirst}
-        last={last}
-        setLast={setLast}
-        email={email}
-        setEmail={setEmail}
-        password={password}
-        setPassword={setPassword}
-        passwordVerification={passwordVerification}
-        setPasswordVerification={setPasswordVerification}
-        signUp={signUp}
-        loading={loading}
-        message={message}
-        setMessage={setMessage}
-        error={error}
-        setError={setError}
-      ></Content>
-    </ThemeProvider>
-  );
-};
-
-const Content = ({
-  first,
-  setFirst,
-  last,
-  setLast,
-  email,
-  setEmail,
-  password,
-  setPassword,
-  passwordVerification,
-  setPasswordVerification,
-  signUp,
-  loading,
-  message,
-  setMessage,
-  error,
-  setError,
-}) => {
-  const { theme } = useContext(ThemeContext);
-
-  const isDarkmode = theme === "dark" ? true : false;
+  const inputStyle = {
+    width: "90%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: isDarkmode ? "white" : "black",
+    borderRadius: 10,
+    color: textColor,
+    textAlign: "center",
+  };
+  const placeholderColor = isDarkmode ? "#a3a3a3" : "#737373";
 
   return (
-    <GestureHandlerRootView>
-      <LinearGradient
-        colors={
-          isDarkmode
-            ? [colors.gradientDark1, colors.gradientDark2]
-            : [colors.gradientLight1, colors.gradientLight2]
-        }
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{ flex: 1 }}
+    <LinearGradient
+      colors={
+        isDarkmode
+          ? [colors.gradientDark1, colors.gradientDark2]
+          : [colors.gradientLight1, colors.gradientLight2]
+      }
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
+    >
+      {message != "" && <Message isError={error} message={message} />}
+      <KeyboardAvoidingView
+        behavior="padding"
+        style={{
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: 14,
+        }}
       >
-        {message != "" && <Message isError={error} message={message} />}
-        <KeyboardAvoidingView
-          behavior="padding"
+        <View
           style={{
             width: "100%",
-            height: "100%",
             justifyContent: "center",
-            alignContent: "center",
             alignItems: "center",
+            marginBottom: 30,
             flexDirection: "column",
-            gap: 20,
           }}
         >
+          <Image
+            source={logo}
+            style={{ width: 80, height: 80 }}
+            resizeMode="contain"
+          />
+          <Text
+            style={{
+              color: textColor,
+              fontFamily: "Audiowide-Regular",
+              fontSize: 40,
+            }}
+          >
+            Elysia
+          </Text>
+        </View>
+        <TextInput
+          style={inputStyle}
+          value={serverUrl}
+          onChangeText={setServerUrl}
+          autoCapitalize="none"
+          keyboardType="url"
+          placeholderTextColor={placeholderColor}
+          placeholder="Server URL"
+        />
+        <TextInput
+          style={inputStyle}
+          value={displayName}
+          onChangeText={setDisplayName}
+          placeholderTextColor={placeholderColor}
+          placeholder="Display name"
+        />
+        <TextInput
+          style={inputStyle}
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+          placeholderTextColor={placeholderColor}
+          placeholder="Username"
+        />
+        <TextInput
+          style={inputStyle}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          placeholderTextColor={placeholderColor}
+          placeholder="Password"
+        />
+        <TextInput
+          style={inputStyle}
+          value={passwordVerification}
+          onChangeText={setPasswordVerification}
+          secureTextEntry
+          placeholderTextColor={placeholderColor}
+          placeholder="Verify Password"
+        />
+
+        {loading ? (
+          <ActivityIndicator size={"small"} style={{ margin: 28 }} />
+        ) : (
           <View
             style={{
               width: "100%",
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: 40,
-              flexDirection: "column",
+              gap: 10,
+              marginTop: 30,
             }}
           >
-            <Image
-              source={logo}
-              style={{ width: 100, height: 100 }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                fontFamily: "Audiowide-Regular",
-                fontSize: 40,
-              }}
-            >
-              Elysia
-            </Text>
-          </View>
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={first}
-            onChangeText={setFirst}
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Firstname"
-          />
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={last}
-            onChangeText={setLast}
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Lastname"
-          />
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Email"
-          />
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Password"
-          />
-
-          <TextInput
-            style={[
-              {
-                width: "90%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: isDarkmode ? "white" : "black",
-                borderRadius: 10,
-                color: isDarkmode ? colors.textDark : colors.textLight,
-                // backgroundColor: isDarkmode ? colors.gradientDark1 : "white",
-                textAlign: "center",
-              },
-            ]}
-            value={passwordVerification}
-            onChangeText={setPasswordVerification}
-            secureTextEntry
-            placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-            placeholder="Verify Password"
-          />
-
-          {loading ? (
-            <ActivityIndicator size={"small"} style={{ margin: 28 }} />
-          ) : (
-            <View
-              style={{
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 10,
-                flexDirection: "row",
-                marginTop: 50,
-              }}
-            >
+            <View style={{ flexDirection: "row", gap: 20 }}>
               <Pressable
                 style={{
                   height: 40,
-                  width: "20%",
+                  width: 100,
                   borderWidth: 1,
                   borderColor: isDarkmode ? "white" : "black",
                   borderRadius: 10,
                   justifyContent: "center",
-                  // backgroundColor: isDarkmode
-                  //   ? colors.gradientDark1
-                  //   : "white",
                 }}
-                onPress={() => {
-                  router.replace("/");
-                }}
+                onPress={() => router.replace("/")}
               >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: isDarkmode ? colors.textDark : colors.textLight,
-                  }}
-                >
+                <Text style={{ textAlign: "center", color: textColor }}>
                   Back
                 </Text>
               </Pressable>
               <Pressable
                 style={{
                   height: 40,
-                  width: "20%",
+                  width: 100,
                   borderWidth: 1,
                   borderColor: isDarkmode ? "white" : "black",
                   borderRadius: 10,
                   justifyContent: "center",
-                  // backgroundColor: isDarkmode
-                  //   ? colors.gradientDark1
-                  //   : "white",
                 }}
-                onPress={() => {
-                  if (
-                    first == "" ||
-                    last == "" ||
-                    email == "" ||
-                    password == "" ||
-                    passwordVerification == ""
-                  ) {
-                    setError(true);
-                    setMessage("No field can remain blank");
-                  } else if (password != passwordVerification) {
-                    setError(true);
-                    setMessage("Passwords must match");
-                  } else {
-                    signUp();
-                  }
-                }}
+                onPress={signUp}
               >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: isDarkmode ? colors.textDark : colors.textLight,
-                  }}
-                >
+                <Text style={{ textAlign: "center", color: textColor }}>
                   Sign Up
                 </Text>
               </Pressable>
             </View>
-          )}
-        </KeyboardAvoidingView>
-      </LinearGradient>
-    </GestureHandlerRootView>
+            <Pressable onPress={switchToLocal} style={{ marginTop: 15 }}>
+              <Text style={{ textAlign: "center", color: colors.purple }}>
+                Use offline instead
+              </Text>
+            </Pressable>
+          </View>
+        )}
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
-};
-
-export default SignUp;
+}

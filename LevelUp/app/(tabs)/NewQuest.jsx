@@ -1,4 +1,4 @@
-import { AddBoss } from "@/components/UI/AddBoss";
+import { AddQuest } from "@/components/UI/AddQuest";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { useContext } from "react";
 import { View } from "react-native";
@@ -15,7 +15,7 @@ const NewQuest = () => {
         backgroundColor: theme == "dark" ? "black" : "white",
       }}
     >
-      <AddBoss onClose={backHandling} />
+      <AddQuest onClose={backHandling} />
     </View>
   );
 };

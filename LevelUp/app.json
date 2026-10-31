@@ -7,19 +7,16 @@
     "icon": "./assets/images/Logo(Purple_Spaced).png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "at.glaucus.elysia",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "at.glaucus.elysia"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Logo(Purple_Spaced).png",
         "backgroundColor": "#000000"
       },
-      "package": "at.glaucus.elysia",
-      "googleServicesFile": "./google-services.json"
+      "package": "at.glaucus.elysia"
     },
     "web": {
       "bundler": "metro",
@@ -31,26 +28,21 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/LogoTry.png",
+          "image": "./assets/images/splash-icon.png",
           "imageWidth": 100,
           "resizeMode": "contain",
-          "backgroundColor": "black"
+          "backgroundColor": "#000000"
         }
       ],
       "expo-font",
       [
         "expo-build-properties",
         {
-          "ios": {
-            "useFrameworks": "static"
+          "android": {
+            "usesCleartextTraffic": true
           }
         }
-      ],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+      ]
+    ]
   }
 }

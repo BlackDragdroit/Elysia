@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Pressable, TextInput, StyleSheet } from "react-native";
+import { View, Text, Pressable, TextInput } from "react-native";
 import { styles, colors } from "@/assets/styles/common";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import { useData } from "@/components/Contexts/DataProvider";
 import renderIcon from "../../assets/styles/renderIcon";
-import { useNavigation } from "expo-router";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -11,8 +11,6 @@ export const AddQuest = ({ onClose }) => {
   const { theme } = useContext(ThemeContext);
 
   const isDarkmode = theme === "dark" ? true : false;
-
-  const navigator = useNavigation();
 
   return (
     <View
@@ -28,7 +26,7 @@ export const AddQuest = ({ onClose }) => {
     >
       <View
         style={{
-          height: 450,
+          height: 480,
           width: "100%",
           alignItems: "center",
           backgroundColor: isDarkmode ? "#09090b" : "white",
@@ -70,13 +68,16 @@ export const AddQuest = ({ onClose }) => {
             Add New Quest
           </Text>
         </View>
-        {AddQuestContent(isDarkmode, onClose)}
+        <AddQuestContent isDarkmode={isDarkmode} onClose={onClose} />
       </View>
     </View>
   );
 };
 
-const AddQuestContent = (isDarkmode, onClose) => {
+const AddQuestContent = ({ isDarkmode, onClose }) => {
+  const { createQuest } = useData();
+  const [title, setTitle] = useState("");
+  const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("core");
   const [items, setItems] = useState([
@@ -84,21 +85,41 @@ const AddQuestContent = (isDarkmode, onClose) => {
     { label: "Optional Quest", value: "optional" },
   ]);
   const [openDif, setOpenDif] = useState(false);
-  const [valueDif, setValueDif] = useState("100");
+  const [valueDif, setValueDif] = useState("easy");
   const [itemsDif, setItemsDif] = useState([
-    { label: "Easy", value: "100" },
-    { label: "Medium", value: "300" },
-    { label: "Hard", value: "500" },
-    { label: "Epic", value: "1000" },
+    { label: "Easy", value: "easy" },
+    { label: "Medium", value: "medium" },
+    { label: "Hard", value: "hard" },
+    { label: "Epic", value: "epic" },
   ]);
   const [date, setDate] = useState(new Date());
+  const [hasDate, setHasDate] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
+      setHasDate(true);
     }
     setShowDatePicker(false);
+  };
+
+  const submit = async () => {
+    if (!title.trim()) {
+      setError("A quest needs a title");
+      return;
+    }
+    try {
+      await createQuest({
+        title: title.trim(),
+        type: value,
+        difficulty: valueDif,
+        dueDate: hasDate ? date.toISOString() : null,
+      });
+      onClose();
+    } catch (e) {
+      setError(e.message || "Could not create quest");
+    }
   };
 
   return (
@@ -127,8 +148,11 @@ const AddQuestContent = (isDarkmode, onClose) => {
             borderRadius: 10,
             color: isDarkmode ? colors.textDark : colors.textLight,
             backgroundColor: isDarkmode ? "black" : "white",
+            paddingHorizontal: 8,
           },
         ]}
+        value={title}
+        onChangeText={setTitle}
         placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
         placeholder="What needs to be done?"
       />
@@ -278,7 +302,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
           gap: 10,
           flexDirection: "row",
         }}
-        onPress={setShowDatePicker}
+        onPress={() => setShowDatePicker(true)}
       >
         {renderIcon(
           "calendar",
@@ -291,27 +315,33 @@ const AddQuestContent = (isDarkmode, onClose) => {
             textAlign: "center",
           }}
         >
-          {new Intl.DateTimeFormat("en-US", {
-            weekday: "short",
-            year: "numeric",
-            month: "long", // e.g., "April"
-            day: "2-digit",
-          }).format(date)}
+          {hasDate
+            ? new Intl.DateTimeFormat("en-US", {
+                weekday: "short",
+                year: "numeric",
+                month: "long",
+                day: "2-digit",
+              }).format(date)
+            : "Pick a due date (optional)"}
         </Text>
       </Pressable>
+
+      {error != "" && (
+        <Text style={{ color: "#ef4444", marginTop: 10 }}>{error}</Text>
+      )}
 
       <View
         style={{
           width: "90%",
           flexDirection: "row",
-          marginTop: 40,
+          marginTop: 30,
           justifyContent: "space-between",
         }}
       >
         <Pressable
           style={{
             borderWidth: 1,
-            borderColor: isDarkmode ? "white" : "black",
+            borderColor: isDarkmode ? colors.textDark : colors.textLight,
             height: 40,
             width: "48%",
             borderRadius: 5,
@@ -337,6 +367,7 @@ const AddQuestContent = (isDarkmode, onClose) => {
             justifyContent: "center",
             backgroundColor: colors.purple,
           }}
+          onPress={submit}
         >
           <Text
             style={{
@@ -357,25 +388,6 @@ const AddQuestContent = (isDarkmode, onClose) => {
           themeVariant="light"
         />
       )}
-      {/* <TextInput
-        style={[
-          {
-            width: "90%",
-            height: 40,
-            borderWidth: 1,
-            borderColor: isDarkmode ? "white" : "black",
-            borderRadius: 10,
-            color: isDarkmode ? colors.textDark : colors.textLight,
-            backgroundColor: isDarkmode ? "black" : "white",
-          },
-        ]}
-        placeholderTextColor={isDarkmode ? "#a3a3a3" : "#737373"}
-        placeholder="What needs to be done?"
-      /> */}
     </View>
   );
 };
-
-// const DateTimePicker = ({ isDarkmode, style = {} }) => {
-//   return <View style={style}></View>;
-// };
