@@ -1,67 +1,33 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { titleFont } from "@/assets/styles/common";
-import renderIcon from "@/assets/styles/renderIcon";
-import logo from "../../assets/images/Logo(Purple).png";
-import { useContext } from "react";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
-import AccountButton from "@/components/UI/AccountButton";
+import React from "react";
+import { View, Text, Image } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme, titleFont } from "@/assets/styles/theme";
+import IconButton from "./IconButton";
+import AccountButton from "./AccountButton";
 
-const Header = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+const logo = require("@/assets/images/Logo(Purple).png");
 
-  const isDarkmode = theme === "dark";
-
+export default function Header() {
+  const { isDark, c, toggleTheme } = useTheme();
+  const insets = useSafeAreaInsets();
   return (
     <View
       style={{
-        flex: 0.08,
-        flexDirection: "row",
-        justifyContent: "space",
-        alignItems: "center",
-        paddingLeft: 10,
-        backgroundColor: isDarkmode ? "#171717" : "#ffffff",
+        paddingTop: insets.top, backgroundColor: c.bg,
+        borderBottomWidth: 1, borderBottomColor: c.border,
+        flexDirection: "row", alignItems: "center",
+        paddingHorizontal: 16, height: 56 + insets.top,
       }}
     >
-      <Image
-        source={logo}
-        style={{ width: 48, height: 48 }}
-        resizeMode="contain"
+      <Image source={logo} style={{ width: 32, height: 32 }} resizeMode="contain" />
+      <Text style={{ fontFamily: titleFont, fontSize: 22, color: c.text, marginLeft: 8 }}>Elysia</Text>
+      <View style={{ flex: 1 }} />
+      <IconButton
+        icon={isDark ? "sun" : "moon"}
+        onPress={toggleTheme}
+        accessibilityLabel={isDark ? "Switch to light mode" : "Switch to dark mode"}
       />
-      <Text
-        style={{
-          fontSize: 24,
-          fontWeight: "heavy",
-          color: isDarkmode ? "white" : "black",
-          fontFamily: titleFont,
-          left: 10,
-        }}
-      >
-        Elysia
-      </Text>
-      <Pressable
-        style={{
-          height: 38,
-          width: 38,
-          backgroundColor: isDarkmode ? "#262626" : "#f5f5f5",
-          borderRadius: 360,
-          justifyContent: "center",
-          alignItems: "center",
-          marginLeft: "auto",
-          marginRight: 10,
-        }}
-        onPress={() => {
-          toggleTheme();
-        }}
-      >
-        {renderIcon(
-          isDarkmode ? "sun" : "moon",
-          isDarkmode ? "white" : "black",
-          20
-        )}
-      </Pressable>
       <AccountButton />
     </View>
   );
-};
-
-export default Header;
+}

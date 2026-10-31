@@ -7,6 +7,7 @@ import { NewQuestButton } from "@/components/UI/NewQuestButton";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { OutcomeToast } from "@/components/Contexts/DataProvider";
 import { font, colors } from "@/assets/styles/common";
+import { StatusBar } from "expo-status-bar";
 
 export default function TabsLayout() {
   return <ThemedTabs />;
@@ -17,15 +18,17 @@ function ThemedTabs() {
   const isDarkmode = theme === "dark";
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: isDarkmode ? "#0f0f12" : "#f4f4f6" }}>
+      <StatusBar style={isDarkmode ? "light" : "dark"} />
       <Header />
       <OutcomeToast />
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: isDarkmode ? "#171717" : "#ffffff",
-            borderTopWidth: 0,
+            backgroundColor: isDarkmode ? "#18181c" : "#ffffff",
+            borderTopWidth: 1,
+            borderTopColor: isDarkmode ? "#2a2a31" : "#e4e4e7",
             elevation: 0,
             shadowOpacity: 0,
             shadowColor: "transparent",

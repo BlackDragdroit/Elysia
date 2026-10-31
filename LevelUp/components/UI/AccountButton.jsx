@@ -1,97 +1,30 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { useContext, useEffect } from "react";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
-import { useData } from "@/components/Contexts/DataProvider";
+import { View, Text, Pressable } from "react-native";
+import { router } from "expo-router";
 import renderIcon from "@/assets/styles/renderIcon";
-import { colors } from "@/assets/styles/common";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  withDelay,
-} from "react-native-reanimated";
+import { useTheme } from "@/assets/styles/theme";
+import { useData } from "@/components/Contexts/DataProvider";
 
-const AccountButton = ({ size = 48, animated = false, onPress = () => {} }) => {
-  const { theme } = useContext(ThemeContext);
+export default function AccountButton() {
+  const { c } = useTheme();
   const { profile } = useData();
-
-  const isDarkmode = theme === "dark" ? true : false;
   const level = profile?.level ?? 1;
-  const icon = profile?.equipped?.icon || "person-standing";
-
-  const bounce = useSharedValue(0);
-  useEffect(() => {
-    if (animated) {
-      bounce.value = withDelay(
-        50,
-        withRepeat(withTiming(6, { duration: 1200 }), -1, true)
-      );
-    }
-  }, [animated]);
-  const bounceStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: bounce.value }],
-  }));
-
-  const badge = (
-    <View
-      style={{
-        width: animated ? size / 2.3 : size / 2.5,
-        height: animated ? size / 2.3 : size / 2.5,
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        backgroundColor: colors.purple,
-        borderRadius: 360,
-      }}
-    >
-      <Text
-        style={{
-          color: isDarkmode ? "white" : "black",
-          fontSize: size / 4.5,
-          fontWeight: "bold",
-          textAlign: "center",
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {level}
-      </Text>
-    </View>
-  );
-
   return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: isDarkmode ? "#e5e5e5" : "#262626",
-        borderRadius: 360,
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        alignContent: "center",
-        marginRight: 10,
-      }}
+    <Pressable
+      onPress={() => router.push("/Profile")}
+      accessibilityRole="button"
+      accessibilityLabel={`Profile, level ${level}`}
+      hitSlop={8}
+      style={{ minWidth: 48, minHeight: 48, alignItems: "center", justifyContent: "center" }}
     >
-      {animated ? (
-        <Animated.View
-          style={[
-            bounceStyle,
-            { position: "absolute", bottom: -2, right: -2 },
-          ]}
-        >
-          {badge}
-        </Animated.View>
-      ) : (
-        <View style={{ position: "absolute", top: -2, right: -2 }}>
-          {badge}
+      <View>
+        <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: c.surfaceRaised, alignItems: "center", justifyContent: "center" }}>
+          {renderIcon(profile?.equipped?.icon || "person-standing", c.text, 22)}
         </View>
-      )}
-      {renderIcon(icon, isDarkmode ? "black" : "white", size / 2)}
-    </View>
+        <View style={{ position: "absolute", top: -2, right: -2, width: 18, height: 18, borderRadius: 9, backgroundColor: c.accent, borderWidth: 2, borderColor: c.bg, alignItems: "center", justifyContent: "center" }}>
+          <Text style={{ fontFamily: "Roboto-Variable", fontSize: 10, fontWeight: "700", color: "#ffffff" }}>{level}</Text>
+        </View>
+      </View>
+    </Pressable>
   );
-};
-
-export default AccountButton;
+}

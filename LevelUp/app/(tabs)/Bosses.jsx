@@ -1,196 +1,86 @@
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
-import React, { useContext, useState } from "react";
-import { LinearGradient } from "expo-linear-gradient";
-import { FadeIn } from "@/assets/styles/Animations/Animations";
-import { styles, colors } from "@/assets/styles/common";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import React, { useState } from "react";
+import { View, Text, Pressable, Alert } from "react-native";
 import { useData } from "@/components/Contexts/DataProvider";
-import { NewQuestButton } from "@/components/UI/NewQuestButton";
+import { useTheme, type } from "@/assets/styles/theme";
 import renderIcon from "@/assets/styles/renderIcon";
-import Box from "@/components/UI/Box";
-import { LevelBar } from "@/components/UI/LevelBar";
+import Screen from "@/components/UI/Screen";
+import Card from "@/components/UI/Card";
+import EmptyState from "@/components/UI/EmptyState";
+import IconButton from "@/components/UI/IconButton";
+import ProgressBar from "@/components/UI/ProgressBar";
+import Chip from "@/components/UI/Chip";
 import { AddBoss } from "@/components/UI/AddBoss";
+import { formatDueDate } from "@/services/filters";
 
-const Bosses = () => {
-  const { theme } = useContext(ThemeContext);
-
-  const isDarkmode = theme === "dark";
-  const textColor = isDarkmode ? colors.textDark : colors.textLight;
-
-  const [newBossUI, setNewBossUI] = useState(false);
-  const { bosses } = useData();
-
-  const sorted = [...bosses].sort((a, b) => a.defeated - b.defeated);
-
+function StepRow({ step, bossDefeated, onComplete, c }) {
   return (
-    <LinearGradient
-      colors={
-        isDarkmode
-          ? [colors.gradientDark1, colors.gradientDark2]
-          : [colors.gradientLight1, colors.gradientLight2]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      {newBossUI ? <AddBoss onClose={setNewBossUI} /> : ""}
-      <FadeIn speed={100}>
-        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{
-                marginTop: 40,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "90%",
-              }}
-            >
-              <Text
-                style={[styles.subTitle, { color: textColor, marginLeft: 0 }]}
-              >
-                Boss Battles
-              </Text>
-              <View style={{ marginRight: 10 }}>
-                <Pressable onPress={setNewBossUI}>
-                  <NewQuestButton />
-                </Pressable>
-              </View>
-            </View>
-            {sorted.length === 0 ? (
-              <Box>No active boss battles. Create a new challenge!</Box>
-            ) : (
-              sorted.map((b) => <BossCard key={b.id} boss={b} />)
-            )}
-          </View>
-        </ScrollView>
-      </FadeIn>
-    </LinearGradient>
-  );
-};
-
-const BossCard = ({ boss }) => {
-  const { theme } = useContext(ThemeContext);
-  const { completeBossStep, deleteBoss } = useData();
-  const isDarkmode = theme === "dark";
-  const textColor = isDarkmode ? colors.textDark : colors.textLight;
-  const subColor = isDarkmode ? "#a3a3a3" : "#737373";
-
-  const done = boss.steps.filter((s) => s.completed).length;
-
-  return (
-    <Box style={{ flexDirection: "column", alignItems: "stretch" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-        }}
+    <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10 }}>
+      <Pressable
+        onPress={step.completed || bossDefeated ? undefined : onComplete}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: !!step.completed }}
+        accessibilityLabel={`Complete step ${step.text}`}
+        hitSlop={10}
+        style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -10 }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
-          {renderIcon("swords", boss.defeated ? colors.purple : textColor, 20)}
-          <Text
-            style={{
-              color: textColor,
-              fontFamily: "Roboto-Variable",
-              fontWeight: "bold",
-              fontSize: 16,
-              flexShrink: 1,
-            }}
-          >
-            {boss.title}
-          </Text>
+        <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: 2,
+          borderColor: step.completed ? c.accent : c.border,
+          backgroundColor: step.completed ? c.accent : "transparent",
+          alignItems: "center", justifyContent: "center" }}>
+          {step.completed ? renderIcon("check", "#ffffff", 13) : null}
         </View>
-        <Pressable
-          onPress={() =>
-            Alert.alert(
-              "Delete boss battle?",
-              `"${boss.title}" and its progress will be removed.`,
-              [
-                { text: "Cancel", style: "cancel" },
-                {
-                  text: "Delete",
-                  style: "destructive",
-                  onPress: () => deleteBoss(boss.id),
-                },
-              ]
-            )
-          }
-          style={{ padding: 6 }}
-        >
-          {renderIcon("trash", subColor, 18)}
-        </Pressable>
-      </View>
-
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-          marginTop: 6,
-        }}
-      >
-        <Text style={{ color: subColor, fontSize: 12 }}>
-          {boss.defeated ? "Defeated!" : `${done}/${boss.steps.length} steps`}
-        </Text>
-      </View>
-      <LevelBar
-        prog={(done / boss.steps.length) * 100}
-        style={{ width: "100%", marginTop: 4, marginBottom: 8 }}
-      />
-
-      {boss.steps
-        .slice()
-        .sort((a, b) => a.order - b.order)
-        .map((s) => (
-          <View
-            key={s.id}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingVertical: 6,
-              borderTopWidth: 1,
-              borderColor: isDarkmode ? "#27272a" : "#e7e5e4",
-            }}
-          >
-            <Pressable
-              onPress={() =>
-                !s.completed && !boss.defeated && completeBossStep(boss.id, s.id)
-              }
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 360,
-                borderWidth: 2,
-                borderColor: s.completed ? colors.purple : subColor,
-                backgroundColor: s.completed ? colors.purple : "transparent",
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 10,
-              }}
-            >
-              {s.completed && renderIcon("check", "white", 14)}
-            </Pressable>
-            <Text
-              style={{
-                color: s.completed ? subColor : textColor,
-                fontSize: 14,
-                textDecorationLine: s.completed ? "line-through" : "none",
-                flex: 1,
-              }}
-            >
-              {s.text}
-            </Text>
-          </View>
-        ))}
-    </Box>
+      </Pressable>
+      <Text style={[type.body, { flex: 1, color: step.completed || bossDefeated ? c.textMuted : c.text },
+        step.completed && { textDecorationLine: "line-through" }]}>{step.text}</Text>
+      {!step.completed && !bossDefeated ? (
+        <Text style={[type.caption, { color: c.textMuted }]}>+150 XP</Text>
+      ) : null}
+    </View>
   );
-};
+}
 
-export default Bosses;
+export default function Bosses() {
+  const { c } = useTheme();
+  const { bosses, completeBossStep, deleteBoss } = useData();
+  const [newBossUI, setNewBossUI] = useState(false);
+
+  return (
+    <Screen title="Boss battles" action={<IconButton icon="plus" accessibilityLabel="New boss battle" onPress={() => setNewBossUI(true)} />}>
+      {bosses.length === 0 ? (
+        <Card><EmptyState icon="swords" title="No boss battles yet" hint="Break a big goal into steps" /></Card>
+      ) : (
+        bosses.map((b) => {
+          const done = b.steps.filter((s) => s.completed).length;
+          return (
+            <Card key={b.id} style={{ marginTop: 12 }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: c.accentSoft, alignItems: "center", justifyContent: "center" }}>
+                  {renderIcon("swords", c.accent, 20)}
+                </View>
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <Text style={[type.body, { fontSize: 17, fontWeight: "700", color: c.text }]}>{b.title}</Text>
+                  <Text style={[type.caption, { color: c.textMuted, marginTop: 2 }]}>
+                    {done} of {b.steps.length} steps{b.dueDate ? ` · due ${formatDueDate(b.dueDate)}` : ""}
+                  </Text>
+                </View>
+                {b.defeated ? <Chip label="Defeated" color={c.accentText} bg={c.accentSoft} /> : null}
+                <IconButton icon="trash" color={c.danger} accessibilityLabel={`Delete ${b.title}`}
+                  onPress={() => Alert.alert("Delete boss battle", `Delete "${b.title}"?`, [
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Delete", style: "destructive", onPress: () => deleteBoss(b.id) },
+                  ])}
+                  style={{ marginRight: -8 }} />
+              </View>
+              <ProgressBar progress={done / b.steps.length} style={{ marginTop: 12, marginBottom: 4 }} />
+              {b.steps.map((s) => (
+                <StepRow key={s.id} step={s} bossDefeated={b.defeated} c={c}
+                  onComplete={() => completeBossStep(b.id, s.id)} />
+              ))}
+            </Card>
+          );
+        })
+      )}
+      {newBossUI ? <AddBoss onClose={() => setNewBossUI(false)} /> : null}
+    </Screen>
+  );
+}

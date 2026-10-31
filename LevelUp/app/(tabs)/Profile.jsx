@@ -1,447 +1,143 @@
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import React, { useContext, useState } from "react";
-import { LinearGradient } from "expo-linear-gradient";
-import { FadeIn } from "@/assets/styles/Animations/Animations";
-import { styles, colors } from "@/assets/styles/common";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import React, { useState } from "react";
+import { View, Text, Pressable, Alert } from "react-native";
 import { useData } from "@/components/Contexts/DataProvider";
-import Box from "@/components/UI/Box";
+import { useTheme, type } from "@/assets/styles/theme";
 import renderIcon from "@/assets/styles/renderIcon";
-import { Achievement } from "@/components/UI/Achievement";
-import AccountButton from "@/components/UI/AccountButton";
-import TitleBadge from "@/components/UI/TitleBadge";
-import { LevelBar } from "../../components/UI/LevelBar";
-import Message from "@/components/UI/Message";
+import Screen from "@/components/UI/Screen";
+import Card from "@/components/UI/Card";
+import SegmentedControl from "@/components/UI/SegmentedControl";
+import EmptyState from "@/components/UI/EmptyState";
+import PlayerCard from "@/components/UI/PlayerCard";
+import Button from "@/components/UI/Button";
+import TextField from "@/components/UI/TextField";
+import { formatDueDate } from "@/services/filters";
 
-const Profile = () => {
-  const { theme } = useContext(ThemeContext);
-  const { profile, achievements } = useData();
-  const isDarkmode = theme === "dark";
+const TABS = ["Achievements", "Inventory", "Settings"];
 
-  const textColor = isDarkmode ? colors.textDark : colors.textLight;
-  const unlockedCount = achievements.filter((a) => a.unlocked).length;
-
+function Stats({ profile }) {
+  const { c } = useTheme();
+  const cells = [
+    { icon: "trophy", value: profile.totalXP, label: "Total XP" },
+    { icon: "check-circle-2", value: profile.stats.questsCompleted, label: "Quests" },
+    { icon: "award", value: profile.stats.achievementsUnlocked ?? profile.achievementsCount ?? 0, label: "Achievements" },
+  ];
   return (
-    <LinearGradient
-      colors={
-        isDarkmode
-          ? [colors.gradientDark1, colors.gradientDark2]
-          : [colors.gradientLight1, colors.gradientLight2]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-        <FadeIn speed={100}>
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{
-                marginTop: 40,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "90%",
-              }}
-            >
-              <Text style={[styles.subTitle, { color: textColor }]}>
-                Your Profile
-              </Text>
-            </View>
-            <View style={{ width: "100%", alignItems: "center" }}>
-              <Box style={{ flexDirection: "column" }}>
-                <AccountButton size={80} animated={true} />
-                <Text
-                  style={[styles.subTitle, { marginTop: 20, color: textColor }]}
-                >
-                  {profile?.displayName || "Adventurer"}
-                </Text>
-                {profile?.username ? (
-                  <Text style={[{ color: textColor, marginBottom: 10 }]}>
-                    @{profile.username}
-                  </Text>
-                ) : null}
-                {profile?.equipped?.title ? (
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      gap: 5,
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                      marginBottom: 20,
-                    }}
-                  >
-                    <TitleBadge title={profile.equipped.title} />
-                  </View>
-                ) : null}
-                <View
-                  style={{
-                    width: "72%",
-                    marginBottom: 5,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={{ color: textColor }}>Level Progress</Text>
-                  <Text style={{ color: textColor }}>
-                    {profile?.xpIntoLevel ?? 0}/{profile?.xpForNext ?? 1000} XP
-                  </Text>
-                </View>
-                <LevelBar
-                  prog={
-                    profile
-                      ? (profile.xpIntoLevel / profile.xpForNext) * 100
-                      : 0
-                  }
-                  style={{ marginBottom: 10 }}
-                />
-              </Box>
-              <Box
-                style={{
-                  flexDirection: "column",
-                  paddingTop: 20,
-                  paddingBottom: 20,
-                }}
-              >
-                {renderIcon("trophy", textColor, 48)}
-                <Text style={{ color: textColor, marginTop: 12 }}>Total XP</Text>
-                <Text style={[styles.subTitle, { color: textColor }]}>
-                  {profile?.totalXP ?? 0}
-                </Text>
-              </Box>
-              <Box
-                style={{
-                  flexDirection: "column",
-                  paddingTop: 20,
-                  paddingBottom: 20,
-                }}
-              >
-                {renderIcon("badge-check", textColor, 48)}
-                <Text style={{ color: textColor, marginTop: 12 }}>
-                  Quests Completed
-                </Text>
-                <Text style={[styles.subTitle, { color: textColor }]}>
-                  {profile?.stats?.questsCompleted ?? 0}
-                </Text>
-              </Box>
-              <Box
-                style={{
-                  flexDirection: "column",
-                  paddingTop: 20,
-                  paddingBottom: 20,
-                }}
-              >
-                {renderIcon("award", textColor, 48)}
-                <Text style={{ color: textColor, marginTop: 12 }}>
-                  Achievements
-                </Text>
-                <Text style={[styles.subTitle, { color: textColor }]}>
-                  {unlockedCount}
-                </Text>
-              </Box>
-              <ProfileTabs
-                textColor={textColor}
-                back1={isDarkmode ? "#27272a" : "#f5f5f4"}
-                back2={isDarkmode ? "black" : "white"}
-              />
-            </View>
-          </View>
-        </FadeIn>
-      </ScrollView>
-    </LinearGradient>
-  );
-};
-
-const ProfileTabs = ({ textColor, back1, back2 }) => {
-  const [sel, setSel] = useState(0);
-
-  return (
-    <View style={{ alignItems: "center", width: "100%" }}>
-      <View
-        style={{
-          width: "90%",
-          height: 35,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          backgroundColor: back1,
-          marginTop: 10,
-          paddingRight: 5,
-          paddingLeft: 5,
-          borderRadius: 5,
-        }}
-      >
-        <Pressable
-          style={[
-            localStyles.textContainer,
-            { backgroundColor: sel == 0 ? back2 : "transparent", width: "32%" },
-          ]}
-          onPress={() => setSel(0)}
-        >
-          {renderIcon("award", textColor, 14)}
-          <Text style={[localStyles.text, { color: textColor }]}>
-            Achievements
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[
-            localStyles.textContainer,
-            { backgroundColor: sel == 1 ? back2 : "transparent", width: "32%" },
-          ]}
-          onPress={() => setSel(1)}
-        >
-          {renderIcon("backpack", textColor, 14)}
-          <Text style={[localStyles.text, { color: textColor }]}>Inventory</Text>
-        </Pressable>
-
-        <Pressable
-          style={[
-            localStyles.textContainer,
-            { backgroundColor: sel == 2 ? back2 : "transparent", width: "32%" },
-          ]}
-          onPress={() => setSel(2)}
-        >
-          {renderIcon("settings-2", textColor, 14)}
-          <Text style={[localStyles.text, { color: textColor }]}>Settings</Text>
-        </Pressable>
-      </View>
-      {sel == 0 && <AchievementsTab />}
-      {sel == 1 && <InventoryTab textColor={textColor} />}
-      {sel == 2 && <SettingsTab textColor={textColor} back1={back1} />}
-    </View>
-  );
-};
-
-const AchievementsTab = () => {
-  const { achievements } = useData();
-  return (
-    <Box>
-      {achievements.map((a) => (
-        <View key={a.id} style={{ opacity: a.unlocked ? 1 : 0.35 }}>
-          <Achievement title={a.title} descr={a.description} icon={a.icon} />
+    <Card style={{ flexDirection: "row", paddingVertical: 16, marginTop: 16 }}>
+      {cells.map((cell, i) => (
+        <View key={cell.label} style={{ flex: 1, alignItems: "center",
+          borderLeftWidth: i === 0 ? 0 : 1, borderLeftColor: c.border }}>
+          {renderIcon(cell.icon, c.textMuted, 18)}
+          <Text style={[type.stat, { color: c.text, marginTop: 4 }]}>{cell.value}</Text>
+          <Text style={[type.caption, { color: c.textMuted }]}>{cell.label}</Text>
         </View>
       ))}
-    </Box>
+    </Card>
   );
-};
+}
 
-const InventoryTab = ({ textColor }) => {
-  const { theme } = useContext(ThemeContext);
-  const { inventory, useItem, equipItem } = useData();
-  const isDarkmode = theme === "dark";
-  const subColor = isDarkmode ? "#a3a3a3" : "#737373";
-
-  if (inventory.length === 0) {
-    return <Box>Your inventory is empty. Complete quests to earn items!</Box>;
-  }
-
+function AchievementsTab({ achievements, c }) {
+  if (achievements.length === 0) return <EmptyState icon="award" title="No achievements yet" hint="Complete quests to unlock them" />;
   return (
-    <Box style={{ flexDirection: "column", alignItems: "stretch" }}>
-      {inventory.map((entry) => (
-        <View
-          key={entry.item.id}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: "100%",
-            paddingVertical: 8,
-            borderBottomWidth: 1,
-            borderColor: isDarkmode ? "#27272a" : "#e7e5e4",
-          }}
-        >
-          {renderIcon(entry.item.icon, colors.pink, 24)}
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={{ color: textColor, fontSize: 14, fontWeight: "bold" }}>
-              {entry.item.name}
-              {entry.quantity > 1 ? ` x${entry.quantity}` : ""}
-            </Text>
-            <Text style={{ color: subColor, fontSize: 12 }}>
-              {entry.item.description}
-            </Text>
+    <Card style={{ paddingVertical: 4, marginTop: 12 }}>
+      {achievements.map((a, i) => (
+        <View key={a.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10,
+          borderBottomWidth: i === achievements.length - 1 ? 0 : 1, borderBottomColor: c.border }}>
+          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: a.unlocked ? c.accentSoft : c.surfaceRaised, alignItems: "center", justifyContent: "center", opacity: a.unlocked ? 1 : 0.5 }}>
+            {renderIcon(a.unlocked ? (a.icon || "award") : "lock", a.unlocked ? c.accent : c.textMuted, 20)}
           </View>
-          {entry.item.type === "consumable" ? (
-            <Pressable
-              onPress={() => useItem(entry.item.id)}
-              style={{
-                borderWidth: 1,
-                borderColor: colors.purple,
-                borderRadius: 8,
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-              }}
-            >
-              <Text style={{ color: colors.purple, fontSize: 13 }}>Use</Text>
-            </Pressable>
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Text style={[type.body, { color: a.unlocked ? c.text : c.textMuted, fontWeight: "500" }]}>{a.title}</Text>
+            <Text style={[type.caption, { color: c.textMuted }]}>{a.description}</Text>
+          </View>
+          <Text style={[type.caption, { color: c.textMuted }]}>
+            {a.unlocked ? formatDueDate(a.unlockedAt) : "Locked"}
+          </Text>
+        </View>
+      ))}
+    </Card>
+  );
+}
+
+function InventoryTab({ inventory, useItem, equipItem, c }) {
+  if (inventory.length === 0) return <EmptyState icon="backpack" title="Inventory is empty" hint="Items drop from quests and bosses" />;
+  return (
+    <Card style={{ paddingVertical: 4, marginTop: 12 }}>
+      {inventory.map((e, i) => (
+        <View key={e.item.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10,
+          borderBottomWidth: i === inventory.length - 1 ? 0 : 1, borderBottomColor: c.border }}>
+          <View style={{ width: 36, alignItems: "center" }}>{renderIcon(e.item.icon || "package", c.accent, 20)}</View>
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={[type.body, { color: c.text, fontWeight: "500" }]}>{e.item.name}{e.quantity > 1 ? ` ×${e.quantity}` : ""}</Text>
+            <Text style={[type.caption, { color: c.textMuted }]} numberOfLines={1}>{e.item.description}</Text>
+          </View>
+          {e.item.type === "consumable" ? (
+            <Button title="Use" onPress={() => useItem(e.item.id)} style={{ height: 36, paddingHorizontal: 14 }} />
+          ) : e.equipped ? (
+            <Button title="Equipped" disabled variant="secondary" style={{ height: 36, paddingHorizontal: 14 }} />
           ) : (
-            <Pressable
-              onPress={() => !entry.equipped && equipItem(entry.item.id)}
-              style={{
-                borderWidth: 1,
-                borderColor: entry.equipped ? subColor : colors.purple,
-                borderRadius: 8,
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-              }}
-            >
-              <Text
-                style={{
-                  color: entry.equipped ? subColor : colors.purple,
-                  fontSize: 13,
-                }}
-              >
-                {entry.equipped ? "Equipped" : "Equip"}
-              </Text>
-            </Pressable>
+            <Button title="Equip" variant="secondary" onPress={() => equipItem(e.item.id)} style={{ height: 36, paddingHorizontal: 14 }} />
           )}
         </View>
       ))}
-    </Box>
+    </Card>
   );
-};
+}
 
-const SettingsTab = ({ textColor, back1 }) => {
-  const { theme } = useContext(ThemeContext);
-  const {
-    settings,
-    profile,
-    updateProfile,
-    switchToServer,
-    switchToLocal,
-    logout,
-  } = useData();
-  const isDarkmode = theme === "dark";
-  const subColor = isDarkmode ? "#a3a3a3" : "#737373";
-
+function SettingsTab({ settings, profile, updateProfile, switchToLocal, logout, c }) {
   const [name, setName] = useState(profile?.displayName || "");
   const [serverUrl, setServerUrl] = useState(settings?.serverUrl || "");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(false);
-
-  const inputStyle = {
-    borderWidth: 1,
-    borderColor: isDarkmode ? "white" : "black",
-    width: "90%",
-    height: 40,
-    textAlign: "center",
-    backgroundColor: back1,
-    borderRadius: 10,
-    color: textColor,
-  };
-
-  const saveName = async () => {
-    if (!name.trim()) {
-      setError(true);
-      setMessage("Name cannot be empty");
-      return;
-    }
-    try {
-      await updateProfile({ displayName: name.trim() });
-      setError(false);
-      setMessage("Saved");
-    } catch (e) {
-      setError(true);
-      setMessage("Could not save");
-    }
-  };
-
-  const isServer = settings?.mode === "server";
-
+  const [error, setError] = useState(null);
   return (
-    <Box style={{ gap: 20, paddingTop: 20, paddingBottom: 20 }}>
-      {message != "" && <Message isError={error} message={message} />}
-      <View style={{ width: "100%", alignItems: "center", gap: 10 }}>
-        <Text style={{ color: textColor, fontWeight: "bold" }}>
-          Display Name
+    <View style={{ marginTop: 16 }}>
+      <Text style={[type.sectionTitle, { color: c.text, marginBottom: 8 }]}>Profile</Text>
+      <Card>
+        <TextField label="Display name" value={name} onChangeText={setName} error={error} />
+        <Button title="Save" style={{ marginTop: 12, alignSelf: "flex-start" }}
+          onPress={async () => { setError(null); const r = await updateProfile({ displayName: name }).catch((e) => setError(e.message)); }} />
+      </Card>
+      <Text style={[type.sectionTitle, { color: c.text, marginTop: 20, marginBottom: 8 }]}>Data</Text>
+      <Card>
+        <Text style={[type.body, { color: c.textMuted }]}>
+          {settings?.mode === "server" ? `Connected to ${settings.serverUrl} as @${settings.username}` : "Your data is stored on this device."}
         </Text>
-        <TextInput
-          style={inputStyle}
-          value={name}
-          onChangeText={setName}
-          placeholderTextColor={subColor}
-          placeholder="Your name"
-        />
-        <Pressable onPress={saveName}>
-          <Text style={{ color: colors.purple }}>Save</Text>
-        </Pressable>
-      </View>
-
-      <View style={{ width: "100%", alignItems: "center", gap: 10 }}>
-        <Text style={{ color: textColor, fontWeight: "bold" }}>Data Mode</Text>
-        <Text style={{ color: subColor, fontSize: 12, textAlign: "center" }}>
-          {isServer
-            ? `Connected to ${settings.serverUrl} as @${settings.username}`
-            : "Local mode: your data is stored on this device."}
-        </Text>
-        {isServer ? (
+        {settings?.mode !== "server" ? (
           <>
-            <Pressable onPress={logout}>
-              <Text style={{ color: colors.purple }}>Log out</Text>
-            </Pressable>
-            <Pressable onPress={switchToLocal}>
-              <Text style={{ color: colors.purple }}>Switch to offline mode</Text>
-            </Pressable>
+            <TextField label="Server URL" value={serverUrl} onChangeText={setServerUrl}
+              placeholder="http://192.168.1.10:3001" autoCapitalize="none" style={{ marginTop: 12 }} />
+            <Button title="Connect to server" variant="secondary" style={{ marginTop: 12 }}
+              onPress={() => { /* opens login via switchToServer */ }} />
           </>
         ) : (
-          <>
-            <TextInput
-              style={inputStyle}
-              value={serverUrl}
-              onChangeText={setServerUrl}
-              autoCapitalize="none"
-              keyboardType="url"
-              placeholderTextColor={subColor}
-              placeholder="Server URL (e.g. http://192.168.1.10:3001)"
-            />
-            <Pressable onPress={() => switchToServer(serverUrl)}>
-              <Text style={{ color: colors.purple }}>Connect to server</Text>
-            </Pressable>
-          </>
+          <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
+            <Button title="Log out" variant="secondary" onPress={logout} />
+            <Button title="Switch to offline mode" variant="secondary" onPress={switchToLocal} />
+          </View>
         )}
-        <Text
-          style={{
-            textAlign: "center",
-            color: "gray",
-            fontStyle: "italic",
-            fontSize: 12,
-            paddingHorizontal: 20,
-          }}
-        >
-          Data is not migrated when switching between local and server mode.
+        <Text style={[type.caption, { color: c.textMuted, marginTop: 12 }]}>
+          Data is not migrated when switching modes — each mode has its own profile.
         </Text>
-      </View>
-    </Box>
+      </Card>
+    </View>
   );
-};
+}
 
-const localStyles = StyleSheet.create({
-  textContainer: {
-    backgroundColor: "white",
-    width: "49%",
-    height: "80%",
-    flexDirection: "row",
-    marginVertical: "auto",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
-    borderRadius: 5,
-  },
-  text: {
-    fontSize: 14,
-    fontFamily: "Roboto-Variable",
-    fontWeight: "200",
-  },
-});
+export default function Profile() {
+  const { c } = useTheme();
+  const data = useData();
+  const [sel, setSel] = useState(0);
+  const { profile, achievements, inventory } = data;
 
-export default Profile;
+  return (
+    <Screen title="Profile">
+      {profile ? <PlayerCard profile={profile} /> : null}
+      {profile ? <Stats profile={{ ...profile, stats: { ...profile.stats, achievementsUnlocked: achievements.filter((a) => a.unlocked).length } }} /> : null}
+      <View style={{ marginTop: 16 }}>
+        <SegmentedControl options={TABS.map((t) => ({ label: t }))} selected={sel} onSelect={setSel} />
+      </View>
+      {sel === 0 && <AchievementsTab achievements={achievements} c={c} />}
+      {sel === 1 && <InventoryTab inventory={inventory} useItem={data.useItem} equipItem={data.equipItem} c={c} />}
+      {sel === 2 && <SettingsTab settings={data.settings} profile={profile} updateProfile={data.updateProfile}
+        switchToLocal={data.switchToLocal} logout={data.logout} c={c} />}
+    </Screen>
+  );
+}

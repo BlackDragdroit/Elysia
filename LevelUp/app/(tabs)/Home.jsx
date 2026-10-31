@@ -1,165 +1,95 @@
-import React, { useContext, useState } from "react";
-import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { ThemeContext } from "@/components/Contexts/ThemeProvider";
+import React, { useState } from "react";
+import { View, Text, Pressable } from "react-native";
+import { router, useNavigation } from "expo-router";
 import { useData } from "@/components/Contexts/DataProvider";
-import { FadeIn } from "@/assets/styles/Animations/Animations";
-import { styles, colors } from "@/assets/styles/common";
-import Box from "@/components/UI/Box";
+import { useTheme, type } from "@/assets/styles/theme";
+import renderIcon from "@/assets/styles/renderIcon";
+import Screen from "@/components/UI/Screen";
+import Card from "@/components/UI/Card";
+import SectionHeader from "@/components/UI/SectionHeader";
+import EmptyState from "@/components/UI/EmptyState";
 import QuestRow from "@/components/UI/QuestRow";
-import { Achievement } from "@/components/UI/Achievement";
-import { LevelBar } from "@/components/UI/LevelBar";
-import { useNavigation } from "expo-router";
+import PlayerCard from "@/components/UI/PlayerCard";
+import ProgressBar from "@/components/UI/ProgressBar";
 import { AddQuest } from "@/components/UI/AddQuest";
 import { AddBoss } from "@/components/UI/AddBoss";
 import { isToday } from "@/services/filters";
 
 export default function Home() {
-  const navigation = useNavigation();
-
-  const { theme } = useContext(ThemeContext);
-  const { quests, bosses, achievements } = useData();
-
-  const isDarkmode = theme === "dark";
-  const textColor = isDarkmode ? colors.textDark : colors.textLight;
-
+  const { c } = useTheme();
+  const nav = useNavigation();
+  const { profile, quests, bosses, achievements, completeQuest } = useData();
   const [newQuestUI, setNewQuestUI] = useState(false);
   const [newBossUI, setNewBossUI] = useState(false);
 
-  const todaysQuests = quests.filter(isToday);
+  const todays = quests.filter((q) => !q.completed && isToday(q));
   const activeBosses = bosses.filter((b) => !b.defeated);
-  const recentAchievements = achievements
-    .filter((a) => a.unlocked)
-    .sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt))
-    .slice(0, 4);
+  const recent = achievements.filter((a) => a.unlocked).slice(-3).reverse();
 
   return (
-    <LinearGradient
-      colors={
-        isDarkmode
-          ? [colors.gradientDark1, colors.gradientDark2]
-          : [colors.gradientLight1, colors.gradientLight2]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      {newQuestUI ? <AddQuest onClose={setNewQuestUI} /> : ""}
-      {newBossUI ? <AddBoss onClose={setNewBossUI} /> : ""}
-      <FadeIn speed={100}>
-        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-          <View style={styles.subTitleView}>
-            <Text style={[styles.subTitle, { color: textColor }]}>
-              Today's Quests
-            </Text>
-            <Pressable onPress={setNewQuestUI}>
-              <Text style={styles.subTitleText}>+ New Quest</Text>
-            </Pressable>
-          </View>
+    <Screen>
+      {profile ? <PlayerCard profile={profile} /> : null}
 
-          <View style={localStyles.boxView}>
-            {todaysQuests.length === 0 ? (
-              <Box>No Quests for today. Add a new quest to get started!</Box>
-            ) : (
-              <Box style={{ flexDirection: "column", alignItems: "stretch" }}>
-                {todaysQuests.map((q) => (
-                  <QuestRow key={q.id} quest={q} showDelete={false} />
-                ))}
-              </Box>
-            )}
-          </View>
-          <View style={styles.subTitleView}>
-            <Text style={[styles.subTitle, { color: textColor }]}>
-              Active Boss Battles
-            </Text>
-            <Pressable onPress={setNewBossUI}>
-              <Text style={styles.subTitleText}>+ New Boss</Text>
-            </Pressable>
-          </View>
+      <SectionHeader title="Today" action="New quest" onAction={() => setNewQuestUI(true)} />
+      <Card style={{ paddingHorizontal: 16, paddingVertical: 4 }}>
+        {todays.length === 0 ? (
+          <EmptyState icon="list-checks" title="No quests for today" hint="Tap + to add one" />
+        ) : (
+          todays.map((q, i) => (
+            <QuestRow key={q.id} quest={q} last={i === todays.length - 1}
+              showDelete={false} onComplete={() => completeQuest(q.id)} />
+          ))
+        )}
+      </Card>
 
-          <View style={localStyles.boxView}>
-            {activeBosses.length === 0 ? (
-              <Box>No active boss battles. Create a new challenge!</Box>
-            ) : (
-              activeBosses.map((b) => {
-                const done = b.steps.filter((s) => s.completed).length;
-                return (
-                  <Box
-                    key={b.id}
-                    style={{ flexDirection: "column", alignItems: "stretch" }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        width: "100%",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: textColor,
-                          fontFamily: "Roboto-Variable",
-                          fontWeight: "bold",
-                          fontSize: 15,
-                        }}
-                      >
-                        {b.title}
-                      </Text>
-                      <Text style={{ color: textColor, fontSize: 13 }}>
-                        {done}/{b.steps.length} steps
-                      </Text>
-                    </View>
-                    <LevelBar
-                      prog={(done / b.steps.length) * 100}
-                      style={{ width: "100%", marginTop: 8 }}
-                    />
-                  </Box>
-                );
-              })
-            )}
-          </View>
+      <SectionHeader title="Boss battles" action="New boss" onAction={() => setNewBossUI(true)} />
+      <Card style={{ paddingVertical: 4 }}>
+        {activeBosses.length === 0 ? (
+          <EmptyState icon="swords" title="No active boss battles" hint="Break a big goal into steps" />
+        ) : (
+          activeBosses.map((b, i) => {
+            const done = b.steps.filter((s) => s.completed).length;
+            return (
+              <Pressable key={b.id} onPress={() => nav.navigate("Bosses")}
+                accessibilityRole="button" accessibilityLabel={`${b.title}, ${done} of ${b.steps.length} steps`}
+                style={{ flexDirection: "row", alignItems: "center", paddingVertical: 12,
+                  borderBottomWidth: i === activeBosses.length - 1 ? 0 : 1, borderBottomColor: c.border }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: c.accentSoft, alignItems: "center", justifyContent: "center" }}>
+                  {renderIcon("swords", c.accent, 20)}
+                </View>
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <Text style={[type.body, { color: c.text, fontWeight: "500" }]} numberOfLines={1}>{b.title}</Text>
+                  <Text style={[type.caption, { color: c.textMuted, marginTop: 2 }]}>{done} of {b.steps.length} steps</Text>
+                  <ProgressBar progress={done / b.steps.length} style={{ marginTop: 6 }} />
+                </View>
+              </Pressable>
+            );
+          })
+        )}
+      </Card>
 
-          <View style={styles.subTitleView}>
-            <Text style={[styles.subTitle, { color: textColor }]}>
-              Recent Achievements
-            </Text>
-            <Pressable onPress={() => navigation.navigate("Profile")}>
-              <Text style={styles.subTitleText}>View All {"-->"}</Text>
-            </Pressable>
-          </View>
-          <View style={localStyles.boxView}>
-            <Box>
-              {recentAchievements.length === 0 ? (
-                <Text
-                  style={{
-                    color: isDarkmode ? "#a3a3a3" : "#737373",
-                    textAlign: "center",
-                  }}
-                >
-                  Pretty empty... {"\n"} Complete quests to earn achievements!
-                </Text>
-              ) : (
-                recentAchievements.map((a) => (
-                  <Achievement
-                    key={a.id}
-                    title={a.title}
-                    descr={a.description}
-                    icon={a.icon}
-                  />
-                ))
-              )}
-            </Box>
-          </View>
-        </ScrollView>
-      </FadeIn>
-    </LinearGradient>
+      <SectionHeader title="Recent achievements" action="See all" onAction={() => nav.navigate("Profile")} />
+      <Card style={{ paddingVertical: 4 }}>
+        {recent.length === 0 ? (
+          <EmptyState icon="trophy" title="No achievements yet" hint="Complete your first quest to unlock one" />
+        ) : (
+          recent.map((a, i) => (
+            <View key={a.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10,
+              borderBottomWidth: i === recent.length - 1 ? 0 : 1, borderBottomColor: c.border }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: c.accentSoft, alignItems: "center", justifyContent: "center" }}>
+                {renderIcon(a.icon || "award", c.accent, 20)}
+              </View>
+              <View style={{ flex: 1, marginLeft: 12 }}>
+                <Text style={[type.body, { color: c.text, fontWeight: "500" }]}>{a.title}</Text>
+                <Text style={[type.caption, { color: c.textMuted }]}>{a.description}</Text>
+              </View>
+            </View>
+          ))
+        )}
+      </Card>
+
+      {newQuestUI ? <AddQuest onClose={() => setNewQuestUI(false)} /> : null}
+      {newBossUI ? <AddBoss onClose={() => setNewBossUI(false)} /> : null}
+    </Screen>
   );
 }
-
-const localStyles = StyleSheet.create({
-  boxView: {
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
