@@ -83,17 +83,20 @@ function InventoryTab({ inventory, useItem, equipItem, c }) {
   );
 }
 
-function SettingsTab({ settings, profile, updateProfile, switchToLocal, logout, c }) {
+function SettingsTab({ settings, profile, updateProfile, switchToLocal, switchToServer, logout, c }) {
   const [name, setName] = useState(profile?.displayName || "");
   const [serverUrl, setServerUrl] = useState(settings?.serverUrl || "");
   const [error, setError] = useState(null);
+  const [urlError, setUrlError] = useState(null);
+  const [saved, setSaved] = useState(false);
   return (
     <View style={{ marginTop: 16 }}>
       <Text style={[type.sectionTitle, { color: c.text, marginBottom: 8 }]}>Profile</Text>
       <Card>
         <TextField label="Display name" value={name} onChangeText={setName} error={error} />
         <Button title="Save" style={{ marginTop: 12, alignSelf: "flex-start" }}
-          onPress={async () => { setError(null); const r = await updateProfile({ displayName: name }).catch((e) => setError(e.message)); }} />
+          onPress={async () => { setError(null); setSaved(false); try { await updateProfile({ displayName: name }); setSaved(true); setTimeout(() => setSaved(false), 2000); } catch (e) { setError(e.message); } }} />
+        {saved ? <Text style={[type.caption, { color: c.textMuted, marginTop: 8 }]}>Saved</Text> : null}
       </Card>
       <Text style={[type.sectionTitle, { color: c.text, marginTop: 20, marginBottom: 8 }]}>Data</Text>
       <Card>
@@ -102,10 +105,10 @@ function SettingsTab({ settings, profile, updateProfile, switchToLocal, logout, 
         </Text>
         {settings?.mode !== "server" ? (
           <>
-            <TextField label="Server URL" value={serverUrl} onChangeText={setServerUrl}
-              placeholder="http://192.168.1.10:3001" autoCapitalize="none" style={{ marginTop: 12 }} />
+            <TextField label="Server URL" value={serverUrl} onChangeText={(t) => { setServerUrl(t); setUrlError(null); }}
+              placeholder="http://192.168.1.10:3001" autoCapitalize="none" error={urlError} style={{ marginTop: 12 }} />
             <Button title="Connect to server" variant="secondary" style={{ marginTop: 12 }}
-              onPress={() => { /* opens login via switchToServer */ }} />
+              onPress={() => { if (!serverUrl.trim()) { setUrlError("Enter a server URL"); return; } switchToServer(serverUrl.trim()); }} />
           </>
         ) : (
           <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
@@ -137,7 +140,7 @@ export default function Profile() {
       {sel === 0 && <AchievementsTab achievements={achievements} c={c} />}
       {sel === 1 && <InventoryTab inventory={inventory} useItem={data.useItem} equipItem={data.equipItem} c={c} />}
       {sel === 2 && <SettingsTab settings={data.settings} profile={profile} updateProfile={data.updateProfile}
-        switchToLocal={data.switchToLocal} logout={data.logout} c={c} />}
+        switchToLocal={data.switchToLocal} switchToServer={data.switchToServer} logout={data.logout} c={c} />}
     </Screen>
   );
 }
