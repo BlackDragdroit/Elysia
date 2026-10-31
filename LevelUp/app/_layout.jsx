@@ -35,7 +35,7 @@ function Gate() {
       settings.mode === "local" && profile !== null && !profile.displayName;
 
     if (needsLogin) {
-      if (inTabs) router.replace("/");
+      if (!inAuth) router.replace("/");
     } else if (needsName) {
       if (section !== "Welcome") router.replace("/Welcome");
     } else {

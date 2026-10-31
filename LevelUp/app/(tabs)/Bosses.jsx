@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FadeIn } from "@/assets/styles/Animations/Animations";
@@ -107,7 +107,23 @@ const BossCard = ({ boss }) => {
             {boss.title}
           </Text>
         </View>
-        <Pressable onPress={() => deleteBoss(boss.id)} style={{ padding: 6 }}>
+        <Pressable
+          onPress={() =>
+            Alert.alert(
+              "Delete boss battle?",
+              `"${boss.title}" and its progress will be removed.`,
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => deleteBoss(boss.id),
+                },
+              ]
+            )
+          }
+          style={{ padding: 6 }}
+        >
           {renderIcon("trash-2", subColor, 18)}
         </Pressable>
       </View>

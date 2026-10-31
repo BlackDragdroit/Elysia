@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert } from "react-native";
 import { ThemeContext } from "@/components/Contexts/ThemeProvider";
 import { useData } from "@/components/Contexts/DataProvider";
 import renderIcon from "@/assets/styles/renderIcon";
@@ -66,7 +66,19 @@ const QuestRow = ({ quest, showDelete = true }) => {
         </Text>
       </View>
       {showDelete && (
-        <Pressable onPress={() => deleteQuest(quest.id)} style={{ padding: 6 }}>
+        <Pressable
+          onPress={() =>
+            Alert.alert("Delete quest?", `"${quest.title}" will be removed.`, [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Delete",
+                style: "destructive",
+                onPress: () => deleteQuest(quest.id),
+              },
+            ])
+          }
+          style={{ padding: 6 }}
+        >
           {renderIcon("trash-2", isDarkmode ? "#a3a3a3" : "#737373", 18)}
         </Pressable>
       )}

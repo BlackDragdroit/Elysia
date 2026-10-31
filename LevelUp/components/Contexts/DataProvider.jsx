@@ -27,6 +27,7 @@ export const DataProvider = ({ children }) => {
   const [achievements, setAchievements] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [lastOutcome, setLastOutcome] = useState(null);
+  const [lastError, setLastError] = useState(null);
   const [loading, setLoading] = useState(true);
   const outcomeCounter = useRef(0);
 
@@ -88,8 +89,11 @@ export const DataProvider = ({ children }) => {
     };
   }, [refresh, handleUnauthorized]);
 
+  // surfaceErrors=false (default): failures become a `lastError` toast and the
+  // action resolves to null. Create/update forms pass true so they can show
+  // their own inline errors instead.
   const runAction = useCallback(
-    async (fn) => {
+    async (fn, { surfaceErrors = false } = {}) => {
       try {
         const outcome = await fn();
         if (outcome && typeof outcome === "object" && "xpGained" in outcome) {
@@ -103,7 +107,10 @@ export const DataProvider = ({ children }) => {
           await handleUnauthorized();
           return null;
         }
-        throw e;
+        if (surfaceErrors) throw e;
+        outcomeCounter.current += 1;
+        setLastError({ id: outcomeCounter.current, message: e.message || "Something went wrong" });
+        return null;
       }
     },
     [settings, activeStore, refresh, handleUnauthorized]
@@ -184,12 +191,14 @@ export const DataProvider = ({ children }) => {
 
   // Store actions ----------------------------------------------------------
 
+  const throwing = { surfaceErrors: true };
   const actions = {
-    updateProfile: (patch) => runAction(() => activeStore.updateProfile(patch)),
-    createQuest: (q) => runAction(() => activeStore.createQuest(q)),
+    updateProfile: (patch) =>
+      runAction(() => activeStore.updateProfile(patch), throwing),
+    createQuest: (q) => runAction(() => activeStore.createQuest(q), throwing),
     completeQuest: (id) => runAction(() => activeStore.completeQuest(id)),
     deleteQuest: (id) => runAction(() => activeStore.deleteQuest(id)),
-    createBoss: (b) => runAction(() => activeStore.createBoss(b)),
+    createBoss: (b) => runAction(() => activeStore.createBoss(b), throwing),
     completeBossStep: (bossId, stepId) =>
       runAction(() => activeStore.completeBossStep(bossId, stepId)),
     deleteBoss: (id) => runAction(() => activeStore.deleteBoss(id)),
@@ -206,6 +215,7 @@ export const DataProvider = ({ children }) => {
     achievements,
     inventory,
     lastOutcome,
+    lastError,
     refresh: () => refresh(settings, activeStore),
     switchToLocal,
     switchToServer,
@@ -221,26 +231,45 @@ export const DataProvider = ({ children }) => {
 // Renders a toast summarizing the last action outcome. Mount inside a
 // ThemeProvider + DataProvider (e.g. in the tabs layout).
 export function OutcomeToast() {
-  const { lastOutcome } = useData();
+  const { lastOutcome, lastError } = useData();
   const { theme } = useContext(ThemeContext);
-  if (!lastOutcome) return null;
 
-  const lines = [];
-  if (lastOutcome.xpGained > 0) lines.push(`+${lastOutcome.xpGained} XP`);
-  if (lastOutcome.leveledUp)
-    lines.push(`Level up! You are now level ${lastOutcome.levelAfter}`);
-  for (const a of lastOutcome.unlockedAchievements || [])
-    lines.push(`Achievement unlocked: ${a.title}`);
-  for (const r of lastOutcome.rewards || []) lines.push(`Received: ${r.name}`);
-  if (lines.length === 0) return null;
+  // lastOutcome and lastError share one counter, so the larger id is newer.
+  const showError =
+    lastError && (!lastOutcome || lastError.id > lastOutcome.id);
+
+  if (!lastOutcome && !lastError) return null;
+
+  let message;
+  let key;
+  let isError = false;
+  if (showError) {
+    message = lastError.message;
+    key = lastError.id;
+    isError = true;
+  } else if (lastOutcome) {
+    const lines = [];
+    if (lastOutcome.xpGained > 0) lines.push(`+${lastOutcome.xpGained} XP`);
+    if (lastOutcome.leveledUp)
+      lines.push(`Level up! You are now level ${lastOutcome.levelAfter}`);
+    for (const a of lastOutcome.unlockedAchievements || [])
+      lines.push(`Achievement unlocked: ${a.title}`);
+    for (const r of lastOutcome.rewards || []) lines.push(`Received: ${r.name}`);
+    if (lines.length === 0) return null;
+    message = lines.join("\n");
+    key = lastOutcome.id;
+  } else {
+    return null;
+  }
 
   return (
     <View style={{ position: "absolute", top: 60, right: 10, zIndex: 1000 }}>
       <Message
-        key={lastOutcome.id}
-        isError={false}
-        message={lines.join("\n")}
+        key={key}
+        isError={isError}
+        message={message}
         duration={3500}
+        width={240}
       />
     </View>
   );
