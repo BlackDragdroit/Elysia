@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, useReducedMotion } from "react-native";
-import Animated, { runOnJS, useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
+import { Text, View } from "react-native";
+import Animated, { useReducedMotion, runOnJS, useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import renderIcon from "@/assets/styles/renderIcon";
 import { useTheme, type, radius } from "@/assets/styles/theme";
 

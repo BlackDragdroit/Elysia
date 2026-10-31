@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { View, useReducedMotion } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import { View } from "react-native";
+import Animated, { useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 import { useTheme, radius } from "@/assets/styles/theme";
 
 export default function ProgressBar({ progress, trackColor, fillColor, style }) {

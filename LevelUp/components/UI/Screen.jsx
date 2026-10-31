@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { ScrollView, Text, View, useReducedMotion } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useFocusEffect } from "expo-router";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 import { useTheme, type } from "@/assets/styles/theme";
 
 export default function Screen({ title, action, children, scroll = true }) {
